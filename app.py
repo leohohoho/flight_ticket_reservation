@@ -109,17 +109,19 @@ def registerAuthCustomer():
 
 
 ####################################### Staff's Functions #############################################
-'''
-@app.route('/staffHomePage')
+
+@app.route('/staffHomePage', methods = ['GET', 'POST'])
 def staffHomePage():
-    if request.method == "GET":
-    	if session["loggedin"] and session["role"] == "staff" and "username" in session :
-            username = session["username"]
-            #flights = view_staff_flight(username)
-            return render_template("staffHomePage.html", flights = None, show_button = True, username = username)
-        else: 
-            return render_template("error.html", error="User not logged in")
-'''
+    '''
+    if session.get('loggedin') and session.get('role') == 'staff' and 'username' in session:
+        username = session.get('username')
+        return render_template("staffHomePage.html", show_button = True, username = username)
+    else:
+        return render_template("error.html", error = None)
+    '''
+    username = session.get('username')
+    return render_template("staffHomePage.html", show_button = True, username = username)
+
 @app.route('/loginStaffAuth', methods = ['GET', 'POST'])
 def loginAuthStaff():
     cursor = conn.cursor()
@@ -140,6 +142,7 @@ def loginAuthStaff():
         print(data['password'])
 
         if(password.hexdigest()[:20] == data['password']):
+            print("got here")
             session['username'] = username
             session['role'] = 'staff'
             session['airline'] = data['airline']
