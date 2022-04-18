@@ -153,7 +153,18 @@ def registerStaffAuth():
     
     return render_template('index.html', message = 'Signed up successfully. Now please login.')
 
-
+@app.route('/create_new_flights')
+def create_new_flights():
+	if session['loggedin'] and session['role'] == "staff" and "username" in session:
+		username = session['username']
+		cursor = conn.cursor()
+		query = 'SELECT flight.airplane_ID, flight.airline_name, flight.flight_num, flight.base_price, flight.status, flight.departure_datetime, flight.arrival_datetime, flight.departure_airport_code, flight.arrival_airport_code FROM flight, airline_staff WHERE airline_staff.airline_name = flight.airline_name AND airline_staff.user_name = %s AND (flight.departure_datetime BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 30 DAY))'
+		cursor.execute(query, (username))
+		data = cursor.fetchall()
+		cursor.close()
+		return render_template('create_new_flights.html', posts = data)
+	else: return render_template("error.html", error = "User not logged in")
+        
 
 
 ################################### Other Functions #####################################
