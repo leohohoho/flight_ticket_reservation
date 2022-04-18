@@ -1,0 +1,37 @@
+<html>
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
+	
+	<table>
+        <th>Flight Number</th>
+		<th>Plane ID</th>
+		<th>Airline</th>
+		<th>Price</th>
+		<th>Status</th>
+		<th>Depart</th>
+        <th>From</th>
+		<th>Arrive</th>
+		<th>To</th>
+
+
+
+	{% for line in flights %}
+		<tr>
+            <td>{{line['flight_num']}}</td>
+			<td>{{line['airplane_ID']}}</td>
+			<td>{{line['airline_name']}}</td>
+			<td>{{line['base_price']}}</td>
+			<td>{{line['status']}}</td>
+			<td>{{line['departure_date_time']}}</td>
+            <td>{{line['departure_airport_code']}}</td>
+			<td>{{line['arrival_date_time']}}</td>
+			<td>{{line['arrival_airport_code']}}</td>
+			
+		</tr>
+	{% endfor %}
+	</table>
+
+</html>

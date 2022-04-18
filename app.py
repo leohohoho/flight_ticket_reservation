@@ -109,6 +109,48 @@ def registerAuthCustomer():
 
 
 ####################################### Staff's Functions #############################################
+'''
+@app.route('/staffHomePage')
+def staffHomePage():
+    if request.method == "GET":
+    	if session["loggedin"] and session["role"] == "staff" and "username" in session :
+            username = session["username"]
+            #flights = view_staff_flight(username)
+            return render_template("staffHomePage.html", flights = None, show_button = True, username = username)
+        else: 
+            return render_template("error.html", error="User not logged in")
+'''
+@app.route('/loginStaffAuth', methods = ['GET', 'POST'])
+def loginAuthStaff():
+    cursor = conn.cursor()
+    username = request.form['username']
+    password = request.form['password']
+    password = hashlib.md5(password.encode())
+    try:
+        query = 'SELECT * FROM airline_staff WHERE username = %s'
+        
+        cursor.execute(query, (username))
+
+        data = cursor.fetchone()
+
+        cursor.close()
+        error = None
+
+        print(password.hexdigest()[:20])
+        print(data['password'])
+
+        if(password.hexdigest()[:20] == data['password']):
+            session['username'] = username
+            session['role'] = 'staff'
+            session['airline'] = data['airline']
+            session['loggedin'] = True
+        return redirect(url_for('staffHomePage'))
+    except:
+        #returns an error message to the html page
+        
+        error = 'Invalid login or username'
+        return render_template('index.html', error=error)
+
 @app.route('/registerStaffAuth', methods = ['POST'])
 def registerStaffAuth():
     username = request.form['username']
@@ -152,6 +194,8 @@ def registerStaffAuth():
     cursor.close()
     
     return render_template('index.html', message = 'Signed up successfully. Now please login.')
+
+
 
 @app.route('/create_new_flights')
 def create_new_flights():
