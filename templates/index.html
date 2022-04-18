@@ -1,0 +1,169 @@
+{% extends "layouts/base.html" %}
+
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<script src = "js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+{% endblock %}
+{% block title %}Flight Application {% endblock %}
+{% block body %}
+    <div class = "container">
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>
+                {{error}}
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+            {% endif %}
+
+            {% if message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>
+                    {{message}}
+                </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+                {% endif %}
+
+        <div class = "toolbar">
+        
+            <button type="button" class="button-toolbar" data-bs-toggle="modal" data-bs-target="#exampleModal">
+               Customer Login/Registration
+            </button>
+            <button type = "button" class = "button-toolbar"  data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                Staff Login/Registration
+            </button>  
+            
+              <!-- Customer Login/Signup Modals -->
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Login / Register as Customer</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 class = "secondary-title">Log In</h3>
+                            <div class = "input-group">
+                                <form action = "/loginCustomerAuth" method="POST">
+                                    <input class="form-control form-control-m" name = "email" type="text" placeholder="Username">
+                                    <input class="form-control form-control-m" name = "password" type="password" placeholder="Password" >
+                                    <button type="submit" class="button-primary">Login</button>
+                                </form>
+                            </div>
+                        <h3 class = "secondary-title">Register</h3>
+                            <div class = "input-group">
+                                <form action = "/registerCustomerAuth" method = "POST">
+                                    <input class="form-control form-control-m" name = "name" type="text" placeholder="Name" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "email" type="text" placeholder="Email" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "building" type="text" placeholder="Building" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "street" type="text" placeholder="Street" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "city" type="text" placeholder="City" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "state" type="text" placeholder="State" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "phone" type="text" placeholder="Phone Number" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "passport" type="text" placeholder="Passport Number" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "passport_country" type="text" placeholder="Passport Country" aria-label=".form-control-lg example" required/>
+                                    <label for="exampleFormControlInput1" class="form-label">Passport Expiry Date</label>
+                                    <input class="form-control form-control-m" name = "passportexpiry" type="date" placeholder="Passport Expiry Date" aria-label=".form-control-lg example" required/>
+                                    <label for="exampleFormControlInput1" class="form-label">Date of Birth</label>
+                                    <input class="form-control form-control-m" name = "dateofbirth" type="date" placeholder="Date of Birth" aria-label=".form-control-lg example" required/>
+                                    <input class="form-control form-control-m" name = "password" type="password" placeholder="Password" aria-label=".form-control-lg example" required/>
+                                    <button type="submit" class="button-primary">Register</button>
+                                </form>
+                                
+                             </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <!-- Staff Login/Signup Modals -->
+              <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Login / Register as Staff</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h2 class = "secondary-title green-title">Returning Staff</h1>
+                            <h3 class = "secondary-title">Log In</h3>
+                            <form action = "/staffLoginAuth" method = "POST">
+                                <div class = "input-group">
+                                    <input class="form-control" name = "username" type="text" placeholder="Username">
+                                    <input class="form-control" name = "password" type="password" placeholder="Password" >
+                                    <button type="submit" class="button-secondary">Login</button>
+                                </div>
+                            </form>
+                           
+                            <h3 class = "secondary-title">Register</h3>
+                            <form action = "/registerStaffAuth" method = "POST">
+                                <div class = "input-group">
+                                    <input class="form-control form-control-m" name = "username" type="text" placeholder="Username">
+                                    <input class="form-control form-control-m" name = "firstname" type="text" placeholder="First Name">
+                                    <input class="form-control form-control-m" name = "lastname" type="text" placeholder="Last Name">
+                                    <label for="exampleFormControlInput1" class="form-label">Date of Birth</label>
+                                    <input class="form-control form-control-m" name = "dateofbirth" type="date">
+                                    <input class="form-control form-control-m" name = "airlinename" type="text" placeholder="Airline Name">
+                                    <input class="form-control form-control-m" name = "password" type="password" placeholder="Password" >
+                                    <button type="submit" class="button-secondary">Register</button>
+                                </div>
+                            </form>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+        <div class = "header">
+            <div class = "header-text">
+                <h1 class = "main-title">Search For Flights<h1>
+                <p class = "main-metatext">Anytime. Anywhere.</p>
+            </div>
+        </div>
+        <div class = "search-flights-container">
+            <form action = "/searchFlights" method = "POST">
+                <div class = "row g-2">
+                    <div class="col-sm-2">
+                        <label for="exampleFormControlInput1" class="form-label">Departing City</label>
+                        <input class="form-control " type="text" name = "departure_city" placeholder="Departing City" aria-label=".form-control-lg example">
+                    </div>
+                    <div class = "col-sm-2">
+                        <label for="exampleFormControlInput1" class="form-label">Arriving City</label>
+                        <input class="form-control " type="text" name = "arrival_city" placeholder="Arrival City" aria-label=".form-control-lg example">
+                    </div>
+                    <div class = "col-sm-2">
+                        <div class = "radio-buttons">
+                            <label for="exampleFormControlInput1" class="form-label">Type of Trip</label>
+                            <select class="form-select" aria-label="Default select example">
+                                <option selected>Select...</option>
+                                <option value="one_way" name = "one_way">One-Way</option>
+                                <option value="round_trip" name = "round_trip">Round Trip</option>
+                              </select> 
+                        </div>            
+                    </div>
+                    <div class = "col-sm-2">
+                        <label for="exampleFormControlInput1" class="form-label">Departure Date</label>
+                        <input class="form-control" type="date" name = "departure_date" placeholder="mm/dd/yy" aria-label=".form-control-lg example">
+                    </div>
+                    <div class = "col-sm-2">
+                        <label for="exampleFormControlInput1" class="form-label">Return Date</label>
+                        <input class="form-control" type="date" name = "return_date" placeholder="mm/dd/yy" aria-label=".form-control-lg example">
+                    </div>
+                    <div class="col-sm-2">
+                        <div class = "button-container">
+                            <button type="submit" class="button-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+         
+        </div>
+
+           
+       
+    </div>
+{% endblock %}

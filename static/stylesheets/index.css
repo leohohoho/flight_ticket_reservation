@@ -1,0 +1,153 @@
+body{
+    background-color: #fcfcfc;
+}
+.container{
+    margin-top: 1.5%;
+    height: 100vh;
+}
+
+.header-text{
+    position: relative;
+    top: 40%;
+    left: 4%;
+    letter-spacing: 0.2em;
+}
+
+.form-label{
+    font-family: 'Doris-Medium';
+}
+
+.main-metatext{
+    font-family: 'Doris-Light';
+    font-size: 60%;
+    color: white;
+
+}
+
+.toolbar{
+    height:5vh;
+    margin-bottom: 5px;
+}
+
+.button-toolbar{
+    outline: none;
+    padding: 10px;
+    border: none;
+    float:right;
+    margin-right: 5px;
+    font-family: 'Doris-Light';
+    margin-bottom: 10px;
+    transition: background-color 0.2s;
+}
+
+.header{
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/home-background.jpg');
+    background-position: center;
+    height: 40vh;
+}
+
+.main-title{
+    font-family: ''; 
+    text-align: left;
+    font-family: 'Doris-Medium';
+    color: white;
+    margin-bottom: 35px;
+}
+
+.button-container{
+    margin-top: 15%;
+}
+
+.form-label{
+    font-size: 120% !important;
+}
+
+.button-primary, .button-secondary{
+    border-radius: 10px;
+    font-family: 'Doris-Light';
+    outline: none;
+    border: none;
+    color: white;
+    padding:10px;
+    transition: 0.2s background-color;
+    width: 100%;
+}
+
+.button-primary{
+    background-color: #269cbd;
+
+}
+
+.button-secondary{
+    background-color: rgb(38, 164, 109);
+}
+
+
+
+.button-primary:hover{
+    background-color: #1b6174;
+
+}
+
+.button-secondary:hover{
+    background-color: rgb(32, 118, 102);
+}
+
+
+.secondary-title{
+    font-family: 'Doris-Medium';
+    text-align: center;
+}
+
+.search-flights-container{
+    border: 1px solid rgb(176, 176, 176);
+    margin-top: 3%;
+    border-radius: 10px;
+    padding: 13px;
+}
+
+.login-signup-container{
+    background-color: white;
+    margin-top: 4%;
+}
+
+
+.green-title{
+    color: rgb(38, 164, 109);
+    margin-bottom: 10px;
+}
+.orange-title{
+    color: #269cbd;
+    margin-bottom: 10px;
+}
+
+.form-container{
+    border: 1px solid rgb(176, 176, 176); 
+    border-radius: 10px;
+    padding: 10px;
+}
+
+input{
+    width: 100% !important;
+    margin-bottom: 10px;
+}
+.input-group{
+    flex: 1;
+    flex-direction: column;
+    padding: 20px;
+    justify-content: center;
+}
+
+@font-face{
+    font-family: 'Doris-Bold';
+    src: url('../fonts/Dosis/static/Dosis-Bold.ttf');
+}
+
+@font-face{
+    font-family: 'Doris-Medium';
+    src: url('../fonts/Dosis/static/Dosis-Medium.ttf')
+}
+@font-face{
+    font-family: 'Doris-Light';
+    src: url('../fonts/Dosis/static/Dosis-Light.ttf')
+}

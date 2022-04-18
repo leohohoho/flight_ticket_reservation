@@ -1,0 +1,52 @@
+.search-header{
+    margin-top: 3%
+}
+
+.flight{
+    margin-top: 3%;
+    border: 1px solid rgb(176, 176, 176);
+    padding: 20px; 
+    border-radius: 10px;
+}
+
+.airline_name{
+    margin-top: 3%;
+    font-family: 'Doris-Medium'; 
+}
+
+.departure_time, .arrival_time{
+    font-family: 'Doris-Bold';
+}
+
+.arrival_time{
+    text-align: right;
+}
+
+.horizontal-line{
+    border: 1px solid rgb(148, 148, 148);
+    margin-top: 3%;
+}
+
+.flight_num{
+    font-family: 'Doris-Light'
+}
+
+.arrival_airport_code, .departure_airport_code{
+    font-family: 'Doris-Light'
+}
+
+.departure_airport_code{
+    text-align: right;
+}
+
+.base_price{
+    margin-top: 2%;
+    color: rgb(38, 164, 109);
+    font-family: 'Doris-Medium';
+    text-align: right;
+}
+
+.remaining_seats{
+    font-family:'Doris-Light';
+    text-align: right;
+}
