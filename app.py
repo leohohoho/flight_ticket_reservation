@@ -3,6 +3,7 @@ import pymysql
 import hashlib
 from datetime import datetime, timedelta
 
+# Configure Flask
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "abcde"
@@ -13,6 +14,7 @@ app.config['DB_PASSWORD'] = ""
 app.config['APP_DB'] = "project"
 app.config['CHARSET'] = 'utf8mb4'
 
+# Configure MySQL
 conn = pymysql.connect(
     host = app.config['APP_HOST'],
     user = app.config['DB_USER'],
@@ -21,8 +23,6 @@ conn = pymysql.connect(
     charset = app.config['CHARSET'],
     cursorclass = pymysql.cursors.DictCursor
 )
-
-
 
 @app.route('/')
 def index():
@@ -34,6 +34,12 @@ def index():
     data = cursor.fetchall()
     cursor.close()
     return render_template('index.html', staff = data)
+
+
+################################### Customer's Functions ########################################
+@app.route('/customerHomePage')
+def customerHomePage():
+    return render_template('customerHomePage.html')
 
 @app.route('/loginCustomerAuth', methods = ['GET', 'POST'])
 def loginAuthCustomer():
@@ -102,7 +108,7 @@ def registerAuthCustomer():
         return render_template('index.html', message = "Registered Successfully. Now please log in. ")
 
 
-
+####################################### Staff's Functions #############################################
 @app.route('/registerStaffAuth', methods = ['POST'])
 def registerStaffAuth():
     username = request.form['username']
@@ -147,6 +153,10 @@ def registerStaffAuth():
     
     return render_template('index.html', message = 'Signed up successfully. Now please login.')
 
+
+
+
+################################### Other Functions #####################################
 
 @app.route('/searchFlights', methods = ['GET', 'POST'])
 def searchFlights():
@@ -197,10 +207,6 @@ def searchFlights():
 
     return render_template('searchResults.html', flights = departure_flights, cities = [departure_city, arrival_city]) 
 
-
-@app.route('/customerHomePage')
-def customerHomePage():
-    return render_template('customerHomePage.html')
 
 @app.route('/logout')
 def logout():
