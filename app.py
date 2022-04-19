@@ -112,15 +112,13 @@ def registerAuthCustomer():
 
 @app.route('/staffHomePage', methods = ['GET', 'POST'])
 def staffHomePage():
-    '''
-    if session.get('loggedin') and session.get('role') == 'staff' and 'username' in session:
+    if session.get('login') and session.get('role') == 'staff':
         username = session.get('username')
-        return render_template("staffHomePage.html", show_button = True, username = username)
+        flights = staff_view_flights(username)
+        print('flights',flights)
+        return render_template("staffHomePage.html", flights = flights, show_button = True, username = username)
     else:
         return render_template("error.html", error = None)
-    '''
-    username = session.get('username')
-    return render_template("staffHomePage.html", show_button = True, username = username)
 
 @app.route('/loginStaffAuth', methods = ['GET', 'POST'])
 def loginAuthStaff():
@@ -138,15 +136,14 @@ def loginAuthStaff():
         cursor.close()
         error = None
 
-        print(password.hexdigest()[:20])
+        print(password.hexdigest())
         print(data['password'])
 
-        if(password.hexdigest()[:20] == data['password']):
-            print("got here")
+        if(password.hexdigest() == data['password']):
             session['username'] = username
             session['role'] = 'staff'
-            session['airline'] = data['airline']
-            session['loggedin'] = True
+            session['airline'] = data['airline_name']
+            session['login'] = True
         return redirect(url_for('staffHomePage'))
     except:
         #returns an error message to the html page
@@ -272,7 +269,18 @@ def logout():
     session.pop('name', None)
     return render_template('index.html')
 
+######################################### Helper Functions #####################################################
 
+def staff_view_flights(username):
+    cursor = conn.cursor()
+    query = 'SELECT flight.flight_num, flight.airplane_ID, flight.airline_name, flight.base_price, flight.status, flight.departure_datetime, flight.departure_airport_code, flight.arrival_datetime, flight.arrival_airport_code FROM flight, airline_staff WHERE flight.airline_name = airline_staff.airline_name AND airline_staff.username = %s'
+    # AND (departure_datetime BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 30 DAY))'
+    cursor.execute(query, (username))
+    data = cursor.fetchall()
+    print(data)
+    return data
+
+###############################################################################################################
 if __name__ == "__main__":
     app.run(debug=True)
 
