@@ -2,14 +2,16 @@
 <head>
 </head>
 <body>
-<form action="/post" method="POST">
+<form action="/post_airplane" method="POST">
 	<h1>Welcome {{airline_name}}</h1>
-	Airplane ID: <input type="text" name = "airplane_ID" placeholder="airplane_ID" required/> </br>
-	Number of Seats: <input type="number" name = "num_of_seats" placeholder="num_of_seats" required/> </br>
+	Airplane ID: <input type="text" name = "ID" placeholder="ID" required/> </br>
+	Number of Seats: <input type="number" name = "num_seats" placeholder="numseats" required/> </br>
+    Manufacturer: <input type="text" name = "manufacturer" placeholder="manufacturer" required/> </br>
+    Age: <input type="number" name = "age" placeholder="age" required/> </br>
 	<input type="submit" value = "Add Airplane" />
 </form>
 
-<a href="/staff_home"><button> Back </button></a>
+<a href="/staffHomePage"><button> Back </button></a>
 
 <style type="text/css">
 	table, th, td{
@@ -18,15 +20,19 @@
 </style>
 
 <table>
+    <th>Airplane ID</th>
 	<th>Airline Name</th>
-	<th>Airplane ID</th>
 	<th>Number of Seats</th>
+    <th>Manufacturer</th>
+    <th>Age</th>
 
-{% for line in posts %}
+{% for line in data %}
 	<tr>
+        <td>{{line['ID']}}</td>
 		<td>{{line['airline_name']}}</td>
-		<td>{{line['airplane_ID']}}</td>
-		<td>{{line['num_of_seats']}}</td>
+		<td>{{line['num_seats']}}</td>
+        <td>{{line['manufacturer']}}</td>
+        <td>{{line['age']}}</td>
 	</tr>
 {% endfor %}
 </table>

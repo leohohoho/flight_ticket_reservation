@@ -2,14 +2,16 @@
 <head>
 </head>
 <body>
-<form action="/add_airport_post" method="POST">
-	Airport Code: <input type="text" name = "airport_code" placeholder="airport_code" required/> </br>
-	Airport Name: <input type="text" name = "airport_name" placeholder="airport_name" required/> </br>
-	Airport City: <input type="text" name = "airport_city" placeholder="airport_city" required/> </br>
+<form action="/post_airport" method="POST">
+	Airport Code: <input type="text" name = "code" placeholder="code" required/> </br>
+	Airport Name: <input type="text" name = "name" placeholder="name" required/> </br>
+	Airport City: <input type="text" name = "city" placeholder="city" required/> </br>
+	Airport Country: <input type="text" name = "country" placeholder="country" required/> </br>
+	Airport Type: <input type="text" name = "airport_type" placeholder="airport_type" required/> </br>
 	<input type="submit" value = Submit />
 
 </form>
-<a href="/staff_home"><button> Back </button></a>
+<a href="/staffHomePage"><button> Back </button></a>
 
 <style type="text/css">
 	table, th, td{
@@ -21,12 +23,16 @@
 	<th>Airport Code</th>
 	<th>Airport Name</th>
 	<th>Airport City</th>
+	<th>Airport Country</th>
+	<th>Airport Type</th>
 
-{% for line in posts %}
+{% for line in data %}
 	<tr>
-		<td>{{line['airport_code']}}</td>
-		<td>{{line['airport_name']}}</td>
-		<td>{{line['airport_city']}}</td>
+		<td>{{line['code']}}</td>
+		<td>{{line['name']}}</td>
+		<td>{{line['city']}}</td>
+		<td>{{line['country']}}</td>
+		<td>{{line['airport_type']}}</td>
 	</tr>
 {% endfor %}
 </table>

@@ -2,7 +2,7 @@
 <head>
 </head>
 <body>
-<form action="/create_new_flights_post" method="POST">
+<form action="/post_new_flights" method="POST">
     Flight Num: <input type="text" name = "flight_num" placeholder="flight_num" required/></br>
 	Airplane ID: <input type="text" name = "airplane_ID" placeholder="airplane_ID" required/> </br>
 	Airline Name: <input type="text" name = "airline_name" placeholder="airline_name" required/></br>
@@ -21,7 +21,7 @@
 
 </form>
 
-<a href="/staff_homepage">Back</a>
+<a href="/staffHomePage">Back</a>
 
 
 <!--
@@ -41,10 +41,9 @@
 	<th>Departure Date Time</th>
     <th>Depart Airport Code</th>
 	<th>Arrival Date Time</th>
-	
 	<th>Arrival Airport Code</th>
 
-{% for line in posts %}
+{% for line in data %}
 	<tr>
         <td>{{line['flight_num']}}</td>
 		<td>{{line['airplane_ID']}}</td>

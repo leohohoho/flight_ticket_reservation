@@ -122,7 +122,7 @@ def staffHomePage():
         return render_template("error.html", error = None)
 
 @app.route('/loginStaffAuth', methods = ['GET', 'POST'])
-def loginAuthStaff():
+def loginStaffAuth():
     cursor = conn.cursor()
     username = request.form['username']
     password = request.form['password']
@@ -196,8 +196,6 @@ def registerStaffAuth():
     
     return render_template('index.html', message = 'Signed up successfully. Now please login.')
 
-
-
 @app.route('/create_new_flights')
 def create_new_flights():
 	if session['loggedin'] and session['role'] == "staff" and "username" in session:
@@ -208,11 +206,11 @@ def create_new_flights():
 		cursor.execute(query, (username))
 		data = cursor.fetchall()
 		cursor.close()
-		return render_template('create_new_flights.html', posts = data)
+		return render_template('create_new_flights.html', data = data)
 	else: return render_template("error.html", error = "User not logged in")
         
-@app.route('/create_new_flights_post',methods=['GET', 'POST'])
-def create_new_flights_post(username):
+@app.route('/post_new_flights',methods=['GET', 'POST'])
+def post_new_flights():
     if session['loggedin'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
         flight_num = request.form['flight_num']
@@ -233,7 +231,68 @@ def create_new_flights_post(username):
     else:
         return render_template("error.html", error="User not logged in")
         
+@app.route('/add_airport')
+def add_airport():
+    if session['loggedin'] and session['role'] == "staff" and "username" in session:
+        cursor = conn.cursor()
+        query = 'SELECT code, name, city, country, airport_type FROM airport'
+        cursor.execute(query)
+        data = cursor.fetchall()
+        cursor.close()
+        return render_template('add_airport.html', data = data)
+    else:
+        return render_template("error.html", error = "add airport fail")
 
+@app.route('/post_airport', methods=['GET', 'POST'])
+def post_airport():
+    if session['loggedin'] and session['role'] == "staff" and "username" in session:
+        cursor = conn.cursor()
+        code = request.form['code']
+        name = request.form['name']
+        city = request.form['city']
+        country = request.form['country']
+        airport_type = request.form['airport_type']
+        query = 'INSERT INTO airport(code, name, city, country, airport_type) VALUES (%s, %s, %s, %s, %s)'
+        cursor.execute(query, (code, name, city, country, airport_type))
+        conn.commit()
+        cursor.close()
+        return redirect(url_for('add_airport'))
+    else:
+        return render_template("error.html", error = "post airport fail")
+
+@app.route('/add_airplane')
+def add_airplane():
+    if session['loggedin'] and session['role'] == "staff" and "username" in session:
+        username = session['username']
+        cursor = conn.cursor()
+        query = 'SELECT airplane.ID, airplane.airline_name, airplane.num_seats, airplane.manufacturer, airplane.age FROM airline_staff, airplane WHERE airline_staff.username = %s AND airline_staff.airline_name = airplane.airline_name'
+        cursor.execute(query,(username))
+        data = cursor.fetchall()
+        cursor.close()
+        return render_template('add_airplane.html', data = data)
+    else:
+        return render_template("error.html", error = "add airplane fail")
+
+@app.route('/post_airplane', methods=['GET', 'POST'])
+def post_airplane():
+    if session['loggedin'] and session['role'] == "staff" and "username" in session:
+        username = session['username']
+        cursor = conn.cursor()
+        query_temp = 'SELECT airline_name FROM airline_staff WHERE airline_staff.username = %s'
+        cursor.execute(query_temp, (username))
+        temp = cursor.fetchone()
+        airline_name = temp.get('airline_name')
+        ID = request.form['ID']
+        num_seats = request.form['num_seats']
+        manufacturer = request.form['manufacturer']
+        age = request.form['age']
+        query = 'INSERT INTO airplane(ID, airline_name, num_seats, manufacturer, age) VALUES (%s, %s, %s, %s, %s)'
+        cursor.execute(query, (ID, airline_name, num_seats, manufacturer, age))
+        conn.commit()
+        cursor.close()
+        return redirect(url_for('add_airplane'))
+    else:
+        return render_template("error.html", error = "post airplane fail")
 
 
 ################################### Other Functions #####################################
