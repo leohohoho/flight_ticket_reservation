@@ -1,3 +1,4 @@
+from colorama import Cursor
 from flask import Flask, render_template, session, request, redirect, url_for
 import pymysql
 import hashlib
@@ -202,13 +203,37 @@ def create_new_flights():
 	if session['loggedin'] and session['role'] == "staff" and "username" in session:
 		username = session['username']
 		cursor = conn.cursor()
-		query = 'SELECT flight.airplane_ID, flight.airline_name, flight.flight_num, flight.base_price, flight.status, flight.departure_datetime, flight.arrival_datetime, flight.departure_airport_code, flight.arrival_airport_code FROM flight, airline_staff WHERE airline_staff.airline_name = flight.airline_name AND airline_staff.user_name = %s AND (flight.departure_datetime BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 30 DAY))'
+		query = 'SELECT flight.airplane_ID, flight.airline_name, flight.flight_num, flight.base_price, flight.status, flight.departure_datetime, flight.arrival_datetime, flight.departure_airport_code, flight.arrival_airport_code FROM flight, airline_staff WHERE airline_staff.airline_name = flight.airline_name AND airline_staff.username = %s'
+        # AND (flight.departure_datetime BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 30 DAY))'
 		cursor.execute(query, (username))
 		data = cursor.fetchall()
 		cursor.close()
 		return render_template('create_new_flights.html', posts = data)
 	else: return render_template("error.html", error = "User not logged in")
         
+@app.route('/create_new_flights_post',methods=['GET', 'POST'])
+def create_new_flights_post(username):
+    if session['loggedin'] and session['role'] == "staff" and "username" in session:
+        cursor = conn.cursor()
+        flight_num = request.form['flight_num']
+        airplane_ID = request.form['airplane_ID']
+        airline_name = request.form['airline_name']
+        base_price = request.form['base_price']
+        status = request.form['status']
+        departure_datetime = request.form['departure_datetime']
+        departure_airport_code = request.form['departure_airport_code']
+        arrival_datetime = request.form['arrival_datetime']
+        arrival_airport_code = request.form['arrival_airport_code']
+
+        query = 'INSERT INTO flight(flight_num, airplane_ID, airline_name, base_price, status, departure_date_time, departure_airport_code, arrival_date_time, arrival_airport_code) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(query, (flight_num, airplane_ID, airline_name,  base_price, status, departure_datetime, departure_airport_code,arrival_datetime, arrival_airport_code))
+        conn.commit()
+        cursor.close()
+        return redirect(url_for("create_new_flights"))
+    else:
+        return render_template("error.html", error="User not logged in")
+        
+
 
 
 ################################### Other Functions #####################################
