@@ -1,0 +1,37 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/add_airport_post" method="POST">
+	Airport Code: <input type="text" name = "airport_code" placeholder="airport_code" required/> </br>
+	Airport Name: <input type="text" name = "airport_name" placeholder="airport_name" required/> </br>
+	Airport City: <input type="text" name = "airport_city" placeholder="airport_city" required/> </br>
+	<input type="submit" value = Submit />
+
+</form>
+<a href="/staff_home"><button> Back </button></a>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<table>
+	<th>Airport Code</th>
+	<th>Airport Name</th>
+	<th>Airport City</th>
+
+{% for line in posts %}
+	<tr>
+		<td>{{line['airport_code']}}</td>
+		<td>{{line['airport_name']}}</td>
+		<td>{{line['airport_city']}}</td>
+	</tr>
+{% endfor %}
+</table>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>
