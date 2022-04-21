@@ -365,6 +365,22 @@ def view_earned_revenue():
     else:
         return render_template("error.html", error="Session fail")
 
+@app.route('/view_top_destinations')
+def view_top_destinations():
+    if session['login'] and session['role'] == "staff" and "username" in session:
+        cursor = conn.cursor()
+        username = session['username']
+        query_year = 'SELECT airport.city FROM airline_staff, ticket, flight, airport WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
+        query_month = 'SELECT airport.city FROM airline_staff, ticket, flight, airport WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -3 month) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
+        cursor.execute(query_year, (username))
+        lastyear = cursor.fetchone()
+        cursor.execute(query_month, (username))
+        last3months = cursor.fetchone()
+        cursor.close()
+        return render_template('view_earned_revenue.html', lastyear = lastyear, last3months = last3months)
+    else:
+        return render_template("error.html", error="Session fail")
+
 #================================ Other Functions =================================
 
 @app.route('/searchFlights', methods = ['GET', 'POST'])
