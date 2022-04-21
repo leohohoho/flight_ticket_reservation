@@ -10,28 +10,29 @@
 
 {% if lastyear %}
 	<table>
-		<th>Last year revenue</th>
+		<th>Last Year Revenue</th>
 
-	{% for line in posts %}
+	    {% for line in lastyear %}
 		<tr>
 			<td>{{lastyear['sum(ticket.sold_price)']}}</td>
 		</tr>
-	{% endfor %}
+	    {% endfor %}
 	</table>
 {% endif %}
 
 {% if lastmonth %}
 	<table>
-			<th>Last month revenue</th>
+		<th>Last Month Revenue</th>
+
 		{% for line in lastmonth %}
 		<tr>
 			<td>{{lastmonth['sum(ticket.sold_price)']}}</td>
 		</tr>
-	{% endfor %}
+	    {% endfor %}
 	</table>
 {% endif %}
 
-{% if not lastmonth and not lastyear %}
+{% if not lastyear and not lastmonth %}
 	<h1>No Revenue!</h1>
 {% endif %}
 

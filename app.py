@@ -341,7 +341,7 @@ def view_frequent_customers():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
         username = session['username']
-        query = 'SELECT customer.name, customer.email FROM ticket, airline_staff, customer WHERE airline_staff.user_name = %s AND ticket.airline_name = airline_staff.airline_name AND ticket.email = customer.email AND ticket.departure_date_time BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() GROUP BY customer.email ORDER BY (count(customer.name)) DESC '
+        query = 'SELECT customer.name, customer.email FROM ticket, airline_staff, customer WHERE airline_staff.username = %s AND ticket.airline_name = airline_staff.airline_name AND ticket.email = customer.email AND ticket.departure_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() GROUP BY customer.email ORDER BY (count(customer.name)) DESC '
         cursor.execute(query, (username))
         data = cursor.fetchall()
         cursor.close()
@@ -354,14 +354,33 @@ def view_earned_revenue():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
         username = session['username']
-        query_year = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.user_name = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_date_time BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() group by airline_staff.airline_name'
-        query_month = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.user_name = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_date_time BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() group by airline_staff.airline_name'
+        query_year = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_date_time BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() group by airline_staff.airline_name'
+        query_month = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_date_time BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() group by airline_staff.airline_name'
         cursor.execute(query_year, (username))
         lastyear = cursor.fetchone()
         cursor.execute(query_month, (username))
         lastmonth = cursor.fetchone()
         cursor.close()
         return render_template('view_earned_revenue.html', lastyear = lastyear, lastmonth = lastmonth)
+    else:
+        return render_template("error.html", error="Session fail")
+
+@app.route('/view_earned_revenue_by_class')
+def view_earned_revenue_by_class():
+    if session['login'] and session['role'] == "staff" and "username" in session:
+        cursor = conn.cursor()
+        username = session['username']
+        query_first = "SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.travel_class = 'first' group by airline_staff.airline_name"
+        query_business = "SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.travel_class = 'business' group by airline_staff.airline_name"
+        query_economy = "SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.travel_class = 'economy' group by airline_staff.airline_name"
+        cursor.execute(query_first, (username))
+        first = cursor.fetchone()
+        cursor.execute(query_business, (username))
+        business = cursor.fetchone()
+        cursor.execute(query_economy, (username))
+        economy = cursor.fetchone()
+        cursor.close()
+        return render_template('view_earned_revenue_by_class.html', first = first, business = business, economy = economy)
     else:
         return render_template("error.html", error="Session fail")
 
