@@ -37,7 +37,7 @@ def index():
     return render_template('index.html', staff = data)
 
 
-################################### Customer's Functions ########################################
+#=========================== Customer's Functions ============================
 @app.route('/customerHomePage')
 def customerHomePage():
     return render_template('customerHomePage.html')
@@ -109,7 +109,7 @@ def registerAuthCustomer():
         return render_template('index.html', message = "Registered Successfully. Now please log in. ")
 
 
-####################################### Staff's Functions #############################################
+#============================ Staff's Functions =============================
 
 @app.route('/staffHomePage', methods = ['GET', 'POST'])
 def staffHomePage():
@@ -365,7 +365,7 @@ def view_earned_revenue():
     else:
         return render_template("error.html", error="Session fail")
 
-################################### Other Functions #####################################
+#================================ Other Functions =================================
 
 @app.route('/searchFlights', methods = ['GET', 'POST'])
 def searchFlights():
@@ -423,7 +423,7 @@ def logout():
     session.pop('name', None)
     return render_template('index.html')
 
-######################################### Helper Functions #####################################################
+#================================ Helper Functions =================================
 
 def staff_view_flights(username):
     cursor = conn.cursor()
@@ -434,7 +434,7 @@ def staff_view_flights(username):
     print(data)
     return data
 
-###############################################################################################################
+#========================================================================
 if __name__ == "__main__":
     app.run(debug=True)
 
