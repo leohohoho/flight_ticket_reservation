@@ -1,0 +1,29 @@
+<html>
+<body>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<table>
+	<th>Customer's Name</th>
+	<th>Customer's Email</th>
+
+{% for line in data %}
+	<tr>
+		<td>{{line['name']}}</td>
+		<td>{{line['email']}}</td>
+	</tr>
+{% endfor %}
+</table>
+
+<a href="/staffHomePage"><button> Back </button></a>
+
+<a href="/logout">Logout</a>
+
+</body>
+
+
+</html>

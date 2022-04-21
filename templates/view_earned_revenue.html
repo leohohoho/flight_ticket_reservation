@@ -1,0 +1,43 @@
+<html>
+<body>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+
+{% if lastyear %}
+	<table>
+		<th>Last year revenue</th>
+
+	{% for line in posts %}
+		<tr>
+			<td>{{lastyear['sum(ticket.sold_price)']}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endif %}
+
+{% if lastmonth %}
+	<table>
+			<th>Last month revenue</th>
+		{% for line in lastmonth %}
+		<tr>
+			<td>{{lastmonth['sum(ticket.sold_price)']}}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endif %}
+
+{% if not lastmonth and not lastyear %}
+	<h1>No Revenue!</h1>
+{% endif %}
+
+<a href="/staffHomePage"><button> Back </button></a>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>
