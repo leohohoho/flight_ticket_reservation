@@ -1,0 +1,42 @@
+<html>
+<body>
+
+<h1>Ticket sold in last {{months}} month(s):</h1>
+
+{% if data %}
+    <style type="text/css">
+        table, th, td{
+            border: 1px solid black;
+        }
+    </style>
+
+    <table>
+        <th>Month</th>
+        <th>Tickets sold</th>
+
+        {% for line in data %}
+        <tr>
+            <td>{{line['month']}}</td>
+            <td>{{line['ticket_number']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+<h2>Time Range for Report:</h2>
+<form action="/view_report" method="POST">
+	From: <input type="date" name = "start_date" required/> </br>
+	Until <input type="date" name = "end_date" required/></br>
+	<input type="submit" value = Submit />
+</form>
+
+{% if error %}
+    <p class="error"><strong>Error:</strong> {{error}}</p>
+{% endif %}
+
+<a href="/staffHomePage"><button> Back </button></a>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>

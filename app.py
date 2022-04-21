@@ -349,6 +349,26 @@ def view_frequent_customers():
     else:
         return render_template("error.html", error="Session fail")
 
+@app.route('/view_report')
+def view_report():
+    if request.method == 'POST':
+        if session['login'] and session['role'] == "staff" and "username" in session:
+            #cursor = conn.cursor()
+            airline = session['airline']
+            start_date = request.form['start_date']
+            end_date = request.form['end_date']
+            
+            data = countTicket(airline, start_date, end_date)
+            if data:
+                return render_template('view_report.html', error = None, data = data, months = len(data))
+            else:
+                error = 'No report found'
+                return render_template('view_report.html', error = error, data = None, months = 0)
+        else:
+            return render_template("error.html", error="Session fail")
+    elif request.method == 'GET':
+        return render_template('view_report.html', error = None, data = None, months = 0)
+
 @app.route('/view_earned_revenue')
 def view_earned_revenue():
     if session['login'] and session['role'] == "staff" and "username" in session:
@@ -451,15 +471,6 @@ def searchFlights():
 
     return render_template('searchResults.html', flights = departure_flights, cities = [departure_city, arrival_city]) 
 
-
-@app.route('/logout')
-def logout():
-    session.pop('email', None)
-    session.pop('name', None)
-    return render_template('index.html')
-
-#================================ Helper Functions =================================
-
 def staff_view_flights(username):
     cursor = conn.cursor()
     query = 'SELECT flight.flight_num, flight.airplane_ID, flight.airline_name, flight.base_price, flight.status, flight.departure_datetime, flight.departure_airport_code, flight.arrival_datetime, flight.arrival_airport_code FROM flight, airline_staff WHERE flight.airline_name = airline_staff.airline_name AND airline_staff.username = %s'
@@ -468,6 +479,22 @@ def staff_view_flights(username):
     data = cursor.fetchall()
     print(data)
     return data
+
+def countTicket(airline, startMonth, endMonth):
+    cursor = conn.cursor()
+    query = 'SELECT MONTHNAME(purchase_datetime) as month, COUNT(ticket_ID) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime between %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)'
+    cursor.execute(query, (airline, startMonth, endMonth))
+    data = cursor.fetchall()
+    print("Ticket Numbers: ", data)
+    return data
+
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    session.pop('name', None)
+    return render_template('index.html')
+
+
 
 #========================================================================
 if __name__ == "__main__":
