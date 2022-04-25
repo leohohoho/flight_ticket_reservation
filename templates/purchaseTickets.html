@@ -1,0 +1,175 @@
+{% extends "layouts/base.html" %}
+
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+
+
+<script src = "js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+{% endblock %}
+{% block title %}Flight Application {% endblock %}
+{% block body %}
+<div class = "container">
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>
+            {{error}}
+        </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+        {% endif %}
+
+        {% if message %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>
+                {{message}}
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+            {% endif %}
+
+        {% include "layouts/toolbar.html" %}
+
+    <div class = "header header-purchase">
+        <div class = "header-text">
+            <h1 class = "main-title">Purchase Your Tickets<h1>
+        </div>
+    </div>
+
+
+    <div class = "flight-purchase-section">
+        <h1 class = "purchase-greeting">Your Upcoming Trip, {{ session['name'].split(' ')[0] }}</h1>
+        <div class = "row g-2">
+            <div class = "col-5">
+                <div class = "flight">
+                    <div class = "airport-graphics">
+                        <div class = "row g-2">
+                            <div class = "col-3">
+                                <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+
+                            </div>
+                            <div class = "col-6">
+                                <div class = "horizontal-line"></div>
+                            </div> 
+                            <div class = "col-3">
+                                <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "row g-2">
+                        <div class = "col-6">
+                            <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                            <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                        </div>
+                        <div class = "col-6">
+                            <h2 class = "base_price">${{flight['base_price']}}</h2>
+                        </div>
+                    </div>
+                  
+                </div>
+                {% if flight2 %}
+
+                <div class = "flight">
+                    <div class = "airport-graphics">
+                        <div class = "row g-2">
+                            <div class = "col-3">
+                                <h2 class = "departure_time">{{(flight2['departure_time'])}}</h2>
+                                <h3 class = "arrival_airport_code">{{flight2['departure_airport_code']}}</h3>
+                                <p class = "departure_date">{{flight2['departure_datetime'][:11]}}</p>
+
+                            </div>
+                            <div class = "col-6">
+                                <div class = "horizontal-line"></div>
+                            </div> 
+                            <div class = "col-3">
+                                <h2 class = "arrival_time">{{flight2['arrival_time']}}</h2>
+                                <h3 class = "departure_airport_code">{{flight2['arrival_airport_code']}}</h3>
+                                <p class = "arrival_date">{{flight2['arrival_datetime'][:11]}}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "row g-2">
+                        <div class = "col-6">
+                            <h2 class = "airline_name">{{flight2['airline_name']}}</h2>
+                            <h3 class = "flight_num">{{flight2['flight_num']}}</h3>
+                        </div>
+                        <div class = "col-6">
+                            <h2 class = "base_price">${{flight2['base_price']}}</h2>
+                        </div>
+                    </div>
+                  
+                </div>
+                {% endif %}
+
+            </div>
+
+            <div class = "col-2 vertical line">
+
+            </div>
+            
+            <div class = "col-5">
+                <div class = "purchase-information2">
+
+                <h2 class = "purchase-greeting2">Purchase This Trip</h2>
+
+                    <div class = "costs">
+                        <p>Flight from {{flight['departure_airport_code']}} to {{ flight['arrival_airport_code'] }}: <span>${{flight['base_price']}}</span></p>
+                        {% if flight2 %}
+                        <p>Flight from {{flight2['departure_airport_code']}} to {{ flight2['arrival_airport_code'] }}: <span>${{flight2['base_price']}}</span></p>
+                        {% endif %}
+                        <p>Total: <span>${{ total }}</span></p>
+                    </div>
+                    {% if flight2 %}
+
+                    <form action = " {{ url_for('executePurchaseRoundTrip', 
+                        flight_num1 = flight['flight_num'],
+                        departure_datetime1 = flight['departure_datetime'],
+                        sold_price1 = flight['base_price'],
+                        airline_name1 = flight['airline_name'],
+                        airplane_ID1 = flight['airplane_ID'],
+                        flight_num2 = flight2['flight_num'],
+                        departure_datetime2 = flight2['departure_datetime'],
+                        sold_price2 = flight2['base_price'],
+                        airline_name2 = flight2['airline_name'],
+                        airplane_ID2 = flight2['airplane_ID'],
+                        )}}" method = "POST">
+
+                    {% else %}
+
+                    <form action = "{{ url_for('executePurchaseOneWay', 
+                        flight_num=flight['flight_num'], 
+                        departure_datetime=flight['departure_datetime'], 
+                        sold_price=flight['base_price'], 
+                        airline_name = flight['airline_name'],
+                        airplane_ID = flight['airplane_ID']
+                        )}}" 
+                        method = "POST">
+
+                    {% endif %}
+                   
+                        <input class="form-control form-control-m" name = "name" type="text" placeholder="Name on Card" aria-label=".form-control-lg example" required/>
+                        <input class="form-control form-control-m" name = "card_number" type="text" placeholder="Card Number" aria-label=".form-control-lg example" required/>
+   
+                        <select class="form-select" aria-label="Default select example" name = "card_type">
+                                <option value="Debit" name = "Debit" selected>Debit</option>
+                                <option value="Credit" name = "Credit">Credit</option>
+                              </select> 
+                        <label for="exampleFormControlInput1" class="form-label">Expiration Date</label>
+                        <input class="form-control" type="date" name = "expiration_date" placeholder="mm/dd/yy" aria-label=".form-control-lg example">
+                        <button type = "submit" class = "button-primary">Purchase</button>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

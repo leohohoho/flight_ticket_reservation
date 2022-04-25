@@ -2,8 +2,19 @@
     margin-top: 3%
 }
 
+.search-results{
+    margin-bottom: 3%;
+}
+
+
+.header-search{
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/background-search.jpg') !important;
+    background-position: center;
+}
+
 .flight{
     margin-top: 3%;
+    margin-bottom: 3%;
     border: 1px solid rgb(176, 176, 176);
     padding: 20px; 
     border-radius: 10px;
@@ -27,13 +38,11 @@
     margin-top: 3%;
 }
 
-.flight_num{
+.flight_num, .arrival_date, .departure_date, .arrival_airport_code, .departure_airport_code{
     font-family: 'Doris-Light'
 }
 
-.arrival_airport_code, .departure_airport_code{
-    font-family: 'Doris-Light'
-}
+
 
 .departure_airport_code{
     text-align: right;
@@ -48,5 +57,9 @@
 
 .remaining_seats{
     font-family:'Doris-Light';
+    text-align: right;
+}
+
+.arrival_date{
     text-align: right;
 }

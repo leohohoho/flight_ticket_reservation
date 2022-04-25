@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<script src = "js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+{% endblock %}
+{% block title %}Flight Application {% endblock %}
+{% block body %}
+    <div class = "container">
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>
+                {{error}}
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+            {% endif %}
+
+            {% if message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>
+                    {{message}}
+                </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+                {% endif %}
+
+                {% include "layouts/toolbar.html" %}
+
+        <div class = "header header-search">
+            <div class = "header-text">
+                <h1 class = "main-title">Your Search Results<h1>
+            </div>
+        </div>
+      
+
+        <div class = "search-results">
+            <div class = "search-header">
+                <h1 class = "airline_name">Trip from {{cities[1]}} to {{cities[0]}}</h1>
+            {% if session['email'] %}
+            <h3 class = "airline_name">Choose Your Return Flight</h3>
+            {% else %}
+            <h3 class = "airline_name">View Return Flights</h3>
+            {%endif%}
+                {% if not flights%}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>
+                        Sorry, we couldn't find any flights for that arrival date.
+                    </strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endif %}
+                {% for flight in flights %}
+                <div class = "flight">
+                    <div class = "airport-graphics">
+                        <div class = "row g-2">
+                            <div class = "col-3">
+                                <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+                            </div>
+                            <div class = "col-6">
+                                <div class = "horizontal-line"></div>
+                            </div> 
+                            <div class = "col-3">
+                                <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class = "row g-2">
+                        <div class = "col-6">
+                            <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                            <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                        </div>
+                        <div class = "col-6">
+                            <h2 class = "base_price">${{flight['base_price']}}</h2>
+                            <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+
+                            {% if session['email'] %}
+                            <form action = "{{ url_for('purchaseTickets', 
+                                                        flight1_price = flight1_price,
+                                                        flight2_price = flight['base_price'],
+                                                        departure_flight_id = selected_departure_flight_id, 
+                                                        return_flight = flight['flight_num'])}}" 
+                                method = "POST">
+                                <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                  
+                </div>
+                {% endfor %}
+
+            </div>
+
+           
+       
+    </div>
+{% endblock %}

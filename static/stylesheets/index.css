@@ -17,6 +17,36 @@ body{
     font-family: 'Doris-Medium';
 }
 
+.airline_name{
+    margin-top: 3%;
+    font-family: 'Doris-Medium'; 
+}
+
+.num_trips{
+    font-family: 'Doris-Bold';
+    text-align: center;
+    font-size: 300%;
+    margin-top: 3%;
+}
+
+.vertical-border{
+    margin-top: 4%;
+    margin-bottom: 4%;
+    border-bottom: 1px solid rgb(171, 171, 171);
+    width:50%;
+    margin-left:25%;
+    margin-right:25%;
+}
+
+.homepage-metadata{
+    font-family: 'Doris-Light';
+    text-align: center;
+    margin-top:3%;
+    margin-bottom:6%;
+}
+
+
+
 .main-metatext{
     font-family: 'Doris-Light';
     font-size: 60%;
@@ -44,6 +74,33 @@ body{
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/home-background.jpg');
     background-position: center;
     height: 40vh;
+    margin-bottom: 3%;
+}
+
+.header-spending{
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/background-spending.jpg') !important;
+}
+
+.header-purchase{
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/background-purchase.jpg') !important;
+    background-position: center;
+}
+
+.header-flights{
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/background-flights.jpg') !important;
+    background-position: center;
+}
+
+.button-danger{
+    background-color: #d04839 !important;
+}
+
+.button-danger:hover{
+    background-color: #8f3328 !important;
+}
+
+.modal-title, .modal-body{
+    font-family: 'Doris-light' !important;
 }
 
 .main-title{
@@ -112,6 +169,10 @@ body{
 }
 
 
+.accordion, .accordion-body{
+    font-family: 'Doris-Medium' !important
+}
+
 .green-title{
     color: rgb(38, 164, 109);
     margin-bottom: 10px;
@@ -138,6 +199,28 @@ input{
     justify-content: center;
 }
 
+#upcoming_flights, #past_flights{
+    font-family: 'Doris-Medium';
+    color: black !important;
+}
+
+.rating-stars{
+    margin-top: 4%;
+    text-align: right !important;
+    font-size: 130%;
+}
+
+#accordion-button{
+    text-align: center;
+    text-decoration: none !important;
+    color: black !important;
+    font-family: 'Doris-Medium' !important;
+}
+
+.checked{
+    color: orange !important;
+}
+
 @font-face{
     font-family: 'Doris-Bold';
     src: url('../fonts/Dosis/static/Dosis-Bold.ttf');
@@ -151,3 +234,5 @@ input{
     font-family: 'Doris-Light';
     src: url('../fonts/Dosis/static/Dosis-Light.ttf')
 }
+
+

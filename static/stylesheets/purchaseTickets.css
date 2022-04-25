@@ -1,0 +1,27 @@
+.flight-purchase-section{
+    margin-top: 3% !important;
+}
+.purchase-greeting{
+    font-family: 'Doris-Medium'
+}
+
+.purchase-greeting2{
+    font-family: 'Doris-Medium';
+    text-align: center !important;
+}
+
+.purchase-information2{
+    border: 1px solid gray;
+    border-radius: 10px; 
+    padding: 20px;
+}
+
+.costs{
+    font-family: 'Doris-Light';
+    border: 1px solid black; 
+    border-radius: 10px;
+    padding:20px;
+    margin-top: 2%;
+    margin-bottom: 3%;
+    background-color: white;
+}

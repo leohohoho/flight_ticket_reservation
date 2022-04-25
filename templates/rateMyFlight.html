@@ -1,0 +1,69 @@
+{% extends "layouts/base.html" %}
+
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block title %}Flight Application {% endblock %}
+{% block body %}
+
+<div class = "container">
+    {% include "layouts/toolbar.html" %}
+    <div class = "header">
+        <div class = "header-text">
+            <h1 class = "main-title">Rate Your Flight</h1>
+        </div>
+    </div>
+    <div class = "row g-2">
+        <div class = "col-6">
+            <div class = "flight">
+                <div class = "airport-graphics">
+                    <div class = "row g-2">
+                        <div class = "col-3">
+                            <h2 class = "departure_time">{{(flight_departure_time)}}</h2>
+                            <h3 class = "arrival_airport_code">{{flight_departure_airport_code}}</h3>
+                            <p class = "departure_date">{{flight_departure_datetime[:11]}}</p>
+                        </div>
+                        <div class = "col-6">
+                            <div class = "horizontal-line"></div>
+                        </div> 
+                        <div class = "col-3">
+                            <h2 class = "arrival_time">{{flight_arrival_time}}</h2>
+                            <h3 class = "departure_airport_code">{{flight_arrival_airport_code}}</h3>
+                            <p class = "arrival_date">{{flight_arrival_datetime[:11]}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class = "row g-2">
+                    <div class = "col-6">
+                        <h2 class = "airline_name">{{airline_name}}</h2>
+                        <h3 class = "flight_num">{{flight_num}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "col-6">
+            <div class = "rate-information" style = "padding: 18px;">
+                <form action = "{{ url_for('submitRating', flight_num = flight_num) }}" method = "POST">
+                <label for="exampleFormControlInput1" class="form-label">Number of Stars</label>
+                <select class="form-select" aria-label="Default select example" name = "number_stars">
+                    <option value="1" name = "1" selected>1</option>
+                    <option value="2" name = "2">2</option>
+                    <option value="3" name = "3">3</option>
+                    <option value="4" name = "4">4</option>
+                    <option value="5" name = "5">5</option>
+                  </select> 
+                  <div class="form-group" style = "margin-top:3%;">
+                    <label for="exampleFormControlTextarea1" class = "form-label">Your Comments</label>
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name = "comments"></textarea>
+                  </div>   
+                  <button class = "button-primary" style = "width:100%;float:right;margin-top: 2%;" type = "submit">Submit Rating</button>  
+                </form>       
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,265 @@
+{% extends "layouts/base.html" %}
+
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block title %}Flight Application {% endblock %}
+{% block body %}
+<div class = "container">
+
+    {% include "layouts/toolbar.html" %}
+
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>
+            {{error}}
+        </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+        {% endif %}
+
+        {% if message %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>
+                {{message}}
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+            {% endif %}
+
+
+    <div class = "header header-flights">
+        <div class = "header-text">
+            <h1 class = "main-title">All Your Flights<h1>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="upcoming_flights" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Upcoming Flights</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="past_flights" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Past Flights</button>
+        </li>
+   
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="upcoming_flights">
+            
+            {% if upcoming_flights|length < 1%}
+
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>
+                   You do not have any upcoming flights.
+                </strong>
+              </div>
+            {%else%}
+            {% for flight in upcoming_flights %}
+            <div class = "flight">
+                <div class = "airport-graphics">
+                    <div class = "row g-2">
+                        <div class = "col-3">
+                            <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                            <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                            <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+        
+                        </div>
+                        <div class = "col-6">
+                            <div class = "horizontal-line"></div>
+                        </div> 
+                        <div class = "col-3">
+                            <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                            <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                            <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+        
+                        </div>
+                    </div>
+                </div>
+                <div class = "row g-2">
+                    <div class = "col-6">
+                        <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                        <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                    </div>
+                    <div class = "col-2">
+
+                    </div>
+                    <div class = "col-4">
+                        {% if flight['can_cancel'] %}
+                            <!-- Button trigger modal -->
+                            <button type="button" class="button-primary button-danger" style = "float:right;width:70%;margin-top:14%;" data-toggle="modal" data-target="#exampleModalCenter">
+                                Cancel This Flight
+                            </button>
+  
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm Cancel</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure that you want to cancel this flight?
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="button-primary" style = "width:22%" data-dismiss="modal">Close</button>
+                                        <form action = "{{url_for('cancelFlight', flight_num = flight['flight_num']) }}" method = "POST">
+                                            <button type="submit" class="button-primary button-danger">Confirm Cancel</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                        {% endif %}
+                    </div>
+                </div>
+              
+            </div>            
+            
+            {%endfor%}
+            {%endif%}
+        
+        </div>
+        
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="past_flights">
+            {% if past_flights|length < 1%}
+
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>
+                   You do not have any past flights.
+                </strong>
+              </div>
+            {%else%}
+
+            {% for flight in past_flights %}
+            <div class = "flight">
+                <div class = "airport-graphics">
+                    <div class = "row g-2">
+                        <div class = "col-3">
+                            <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                            <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                            <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+        
+                        </div>
+                        <div class = "col-6">
+                            <div class = "horizontal-line"></div>
+                        </div> 
+                        <div class = "col-3">
+                            <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                            <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                            <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class = "row g-2">
+                    <div class = "col-6">
+                        <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                        <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                    </div>
+                    <div class = "col-6">
+                        <div class = "row">
+                            {% if flight['rating']%}
+
+                            <div class = "rating-stars">
+
+                            {% if flight['rating'] == '1'%}
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+
+                            {% elif flight['rating'] == '2' %}
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+
+                            {% elif flight['rating'] == '3' %}
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                            
+                            {% elif flight['rating'] == '4' %}
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star"></span>
+
+                            {% elif flight['rating'] == '5' %}
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
+                            {% endif %}
+                        </div>
+                        </div>
+                        <div class = "row">
+        
+                            <div class="accordion" style = "margin-top:3%" id="accordionExample">
+                                <div class="accordion-item">
+                                  <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{flight['flight_num']}}" aria-expanded="false" aria-controls="collapseOne">
+                                      Your Comment
+                                    </button>
+                                </h2>
+                                </div>
+                            </div>
+                            <div id="collapse{{flight['flight_num']}}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    {{flight['comment']}}
+                                </div>
+                              </div>
+                        </div>
+                        
+                        {% else %}
+
+                        <form action = "{{ url_for('rateMyFlight', 
+                                                   airline_name = flight['airline_name'],
+                                                   flight_departure_time = flight['departure_time'],
+                                                   flight_num = flight['flight_num'],
+                                                   flight_departure_airport_code = flight['departure_airport_code'],
+                                                   flight_arrival_airport_code = flight['arrival_airport_code'],
+                                                   flight_departure_date = flight['departure_datetime'],
+                                                   flight_arrival_datetime = flight['arrival_datetime'],
+                                                   flight_arrival_time = flight['arrival_time']
+                                                )}}" 
+                            method = "POST">
+                            <button class = "button-primary" style = "width:30%;float:right;margin-top: 9%;" type = "submit">Rate This Flight</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                
+                </div>
+              
+            </div>
+            {%endfor%}
+            {%endif%}
+        </div>
+    
+      </div>
+
+ 
+
+
+</div>
+
+
+{% endblock %}
+
