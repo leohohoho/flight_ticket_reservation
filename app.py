@@ -316,11 +316,11 @@ def change_status():
             else:
                 cursor.close()
                 error = 'Cannot find flight'
-                return render_template('change_status.html', error = error)
+                return render_template('change_status_of_flights.html', error = error)
         else:
             return render_template("error.html", error="Session fail")
     elif request.method == 'GET':
-        return render_template('change_status.html', error = None)
+        return render_template('change_status_of_flights.html', error = None)
 
 # Untested Code
 @app.route('/view_flight_ratings')
@@ -353,12 +353,15 @@ def view_frequent_customers():
 def view_report():
     if request.method == 'POST':
         if session['login'] and session['role'] == "staff" and "username" in session:
-            #cursor = conn.cursor()
+            cursor = conn.cursor()
             airline = session['airline']
             start_date = request.form['start_date']
             end_date = request.form['end_date']
             
-            data = countTicket(airline, start_date, end_date)
+            query = 'SELECT MONTHNAME(purchase_datetime) as month, COUNT(ticket_ID) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime between %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)'
+            cursor.execute(query, (airline, start_date, end_date))
+            data = cursor.fetchall()
+            #data = countTicket(airline, start_date, end_date)
             if data:
                 return render_template('view_report.html', error = None, data = data, months = len(data))
             else:
@@ -374,8 +377,8 @@ def view_earned_revenue():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
         username = session['username']
-        query_year = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_date_time BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() group by airline_staff.airline_name'
-        query_month = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_date_time BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() group by airline_staff.airline_name'
+        query_year = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() group by airline_staff.airline_name'
+        query_month = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() group by airline_staff.airline_name'
         cursor.execute(query_year, (username))
         lastyear = cursor.fetchone()
         cursor.execute(query_month, (username))
@@ -416,7 +419,7 @@ def view_top_destinations():
         cursor.execute(query_month, (username))
         last3months = cursor.fetchone()
         cursor.close()
-        return render_template('view_earned_revenue.html', lastyear = lastyear, last3months = last3months)
+        return render_template('view_top_destinations.html', lastyear = lastyear, last3months = last3months)
     else:
         return render_template("error.html", error="Session fail")
 
@@ -479,7 +482,7 @@ def staff_view_flights(username):
     data = cursor.fetchall()
     print(data)
     return data
-
+'''
 def countTicket(airline, startMonth, endMonth):
     cursor = conn.cursor()
     query = 'SELECT MONTHNAME(purchase_datetime) as month, COUNT(ticket_ID) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime between %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)'
@@ -487,7 +490,7 @@ def countTicket(airline, startMonth, endMonth):
     data = cursor.fetchall()
     print("Ticket Numbers: ", data)
     return data
-
+'''
 @app.route('/logout')
 def logout():
     session.pop('email', None)
