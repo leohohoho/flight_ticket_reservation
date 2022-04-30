@@ -278,6 +278,7 @@ def post_airplane():
     if session['login'] and session['role'] == "staff" and "username" in session:
         username = session['username']
         cursor = conn.cursor()
+        # get airline name from the staff
         query_temp = 'SELECT airline_name FROM airline_staff WHERE airline_staff.username = %s'
         cursor.execute(query_temp, (username))
         temp = cursor.fetchone()
@@ -341,7 +342,7 @@ def view_frequent_customers():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
         username = session['username']
-        query = 'SELECT customer.name, customer.email FROM ticket, airline_staff, customer WHERE airline_staff.username = %s AND ticket.airline_name = airline_staff.airline_name AND ticket.email = customer.email AND ticket.departure_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() GROUP BY customer.email ORDER BY (count(customer.name)) DESC '
+        query = 'SELECT customer.name, customer.email FROM ticket, airline_staff, customer WHERE airline_staff.username = %s AND ticket.airline_name = airline_staff.airline_name AND ticket.email = customer.email AND ticket.departure_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() GROUP BY customer.email ORDER BY (count(customer.name)) DESC'
         cursor.execute(query, (username))
         data = cursor.fetchall()
         cursor.close()
