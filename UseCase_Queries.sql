@@ -10,7 +10,7 @@
 /* 1. View flights */
 SELECT flight.flight_num, flight.airplane_ID, flight.airline_name, flight.base_price, flight.status, flight.departure_datetime, flight.departure_airport_code, flight.arrival_datetime, flight.arrival_airport_code 
 FROM flight, airline_staff 
-WHERE flight.airline_name = airline_staff.airline_name AND airline_staff.username = %s
+WHERE flight.airline_name = airline_staff.airline_name AND airline_staff.username = %s AND (departure_datetime BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 30 DAY))
 
 /* 2. Create New Flights */
 /* search query */
