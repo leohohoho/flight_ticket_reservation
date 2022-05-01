@@ -122,7 +122,7 @@ def staffHomePage():
         print('flights',flights)
         return render_template("staffHomePage.html", flights = flights, show_button = True, username = username)
     else:
-        return render_template("error.html", error = None)
+        return render_template("error.html", error = 'Staff is not logged in')
 
 @app.route('/loginStaffAuth', methods = ['GET', 'POST'])
 def loginStaffAuth():
@@ -598,8 +598,14 @@ def countTicket(airline, startMonth, endMonth):
 '''
 @app.route('/logout')
 def logout():
-    session.pop('email', None)
-    session.pop('name', None)
+    if session['role'] == 'staff':
+        session.pop('username',None)
+        session.pop('role',None)
+        session.pop('airline',None)
+        session.pop('login',None)
+    else:
+        session.pop('email', None)
+        session.pop('name', None)
     return render_template('index.html')
 
 
