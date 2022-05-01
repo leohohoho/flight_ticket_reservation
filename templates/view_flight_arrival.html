@@ -1,0 +1,55 @@
+<html>
+<body>
+<form action="/view_flight_arrival" method="POST">
+	Arrival Airport: <input type="text" name = "arrival" placeholder="Enter Arrival Airport Code" required/></br>
+	<input type="submit" value = Find />
+
+</form>
+
+	{% if show %}
+	<html>
+		<style type="text/css">
+			table, th, td{
+				border: 1px solid black;
+			}
+		</style>
+		
+		<table>
+            <th>Flight Number</th>
+			<th>Airplane ID</th>
+			<th>Airline Name</th>
+			<th>Base Price</th>
+			<th>Status</th>
+			<th>Departure Date Time</th>
+            <th>Departure Airport</th>
+			<th>Arrival Date Time</th>
+            <th>Arrival Airport</th>
+	
+		{% for line in flights %}
+			<tr>
+                <td>{{line['flight_num']}}</td>
+				<td>{{line['airplane_ID']}}</td>
+				<td>{{line['airline_name']}}</td>
+				<td>{{line['base_price']}}</td>
+				<td>{{line['status']}}</td>
+				<td>{{line['departure_datetime']}}</td>
+                <td>{{line['departure_airport_code']}}</td>
+				<td>{{line['arrival_datetime']}}</td>
+                <td>{{line['arrival_airport_code']}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	
+	</html>
+	
+	{% endif %}
+
+    <a href="/view_flight_staff"><button>Back </button></a>
+    <a href="/staffHomePage"><button>Home</button></a>
+
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+
+</body>
+</html>

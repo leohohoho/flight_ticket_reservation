@@ -9,22 +9,32 @@
 
 <table>
 	<th>Past Year Top Destination</th>
-
-    {% for line in lastyear %}
-	<tr>
-		<td>{{line['city']}}</td>
-	</tr>
-    {% endfor %}
+	{% if lastyear|length == 1 %}
+		<tr>
+			<td>{{lastyear['city']}}</td>
+		</tr>
+	{% else %}
+		{% for line in lastyear %}
+		<tr>
+			<td>{{line['city']}}</td>
+		</tr>
+		{% endfor %}
+	{% endif %}
 </table>
 
 <table>
 	<th>Past 3 Months Top Destination</th>
-
-	{% for line in last3months %}
-	<tr>
-		<td>{{line['city']}}</td>
-	</tr>
-    {% endfor %}
+	{% if last3months|length == 1 %}
+		<tr>
+			<td>{{last3months['city']}}</td>
+		</tr>
+	{% else %}
+		{% for line in last3months %}
+		<tr>
+			<td>{{line['city']}}</td>
+		</tr>
+		{% endfor %}
+	{% endif %}
 </table>
 
 <a href="/staffHomePage"><button> Back </button></a>

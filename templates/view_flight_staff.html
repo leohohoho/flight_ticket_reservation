@@ -1,0 +1,64 @@
+<html>
+<head>
+</head>
+<body>
+<form action="/view_flight_staff" method="POST">
+	Departure Airport: <input type="text" name = "depart" placeholder="Enter Airport Code" required/></br>
+	Arrival Airport: <input type="text" name = "arrive" placeholder="Enter Airport Code" required/></br>
+	From: <input type="datetime-local" name = "start time" required/></br>
+	Until: <input type="datetime-local" name = "end time" required/></br>
+	<input type="submit" value = Find />
+
+</form>
+
+    <a href="/view_flight_date"><button>View Flight Within Ranged Date</button></a>
+	<a href="/view_flight_departure"><button>View Flight Based on Departure Airport</button></a>
+	<a href="/view_flight_arrival"><button>View Flight Based on Arrival Airport</button></a>
+
+	{% if show %}
+	<html>
+		<style type="text/css">
+			table, th, td{
+				border: 1px solid black;
+			}
+		</style>
+		
+		<table>
+            <th>Flight Number</th>
+			<th>Airplane ID</th>
+			<th>Airline Name</th>
+			<th>Base Price</th>
+			<th>Status</th>
+			<th>Departure Date Time</th>
+            <th>Departure Airport</th>
+			<th>Arrival Date Time</th>
+            <th>Arrival Airport</th>
+	
+		{% for line in flights %}
+			<tr>
+                <td>{{line['flight_num']}}</td>
+				<td>{{line['airplane_ID']}}</td>
+				<td>{{line['airline_name']}}</td>
+				<td>{{line['base_price']}}</td>
+				<td>{{line['status']}}</td>
+				<td>{{line['departure_datetime']}}</td>
+                <td>{{line['departure_airport_code']}}</td>
+				<td>{{line['arrival_datetime']}}</td>
+                <td>{{line['arrival_airport_code']}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+	
+	</html>
+	
+	{% endif %}
+
+
+<a href="/staffHomePage"> Back </a>
+
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
+
+</body>
+</html>

@@ -1,8 +1,11 @@
+from http.client import REQUEST_TIMEOUT
 from colorama import Cursor
 from flask import Flask, render_template, session, request, redirect, url_for
 import pymysql
 import hashlib
+import json
 from datetime import datetime, timedelta
+import jinja2
 
 # Configure Flask
 app = Flask(__name__)
@@ -196,6 +199,93 @@ def registerStaffAuth():
     
     return render_template('index.html', message = 'Signed up successfully. Now please login.')
 
+# view flight use cases
+@app.route("/view_flight_staff",methods=['GET', 'POST'])
+def view_flight_staff():
+    if session['login'] and session['role'] == "staff" and "username" in session:
+        if request.method == 'POST':
+            cursor = conn.cursor()
+            departure_airport = request.form['departure']
+            arrival_airport = request.form['arrival']
+            start = request.form['start time']
+            datetime.strptime(start, '%Y-%m-%dT%H:%M')
+            end = request.form['end time']
+            datetime.strptime(end, '%Y-%m-%dT%H:%M')
+            airline = session['airline']
+            query = 'SELECT * FROM flight WHERE flight.airline_name = %s AND flight.departure_airport_code = %s AND flight.arrival_airport_code = %s AND (flight.departure_date_time BETWEEN %s AND %s)'
+            cursor.execute(query, (airline,departure_airport,arrival_airport,start,end))
+            data = cursor.fetchall()
+            if data:
+                return render_template("view_flight_staff.html", show = True, flights = data, error=None)
+            else:
+                return render_template("view_flight_staff.html", show = False, flights = None, error='Flight cannot be found')
+        else:
+            username = session.get('username')
+            data = staff_view_flights_30_days(username)
+            return render_template("view_flight_staff.html", show = True, flights = data,error=None)
+    else:
+        return render_template("error.html", error = "User not logged in")
+
+@app.route("/view_flight_date",methods=['GET', 'POST'])
+def view_flight_date():
+    if session['login'] and session['role'] == "staff" and "username" in session:
+        if request.method == 'POST':
+            cursor = conn.cursor()
+            start = request.form['start time']
+            datetime.strptime(start, '%Y-%m-%dT%H:%M')
+            end = request.form['end time']
+            datetime.strptime(end, '%Y-%m-%dT%H:%M')
+            airline = session['airline']
+            query = 'SELECT * FROM flight WHERE flight.airline_name = %s  AND (flight.departure_datetime BETWEEN %s AND %s)'
+            cursor.execute(query, (airline,start, end))
+            data = cursor.fetchall()
+            if data:
+                return render_template("view_flight_date.html", show = True, flights = data, error=None)
+            else:
+                return render_template("view_flight_date.html", show = False, flights = None, error='Flight cannot be found')
+        else:
+            return render_template("view_flight_date.html", show = False, flights = None,error=None)
+    else:
+        return render_template("error.html", error = "User not logged in")
+
+@app.route("/view_flight_departure",methods=['GET', 'POST'])
+def view_flight_departure():
+    if session['login'] and session['role'] == "staff" and "username" in session:
+        if request.method == 'POST':
+            cursor = conn.cursor()
+            departure_airport = request.form['departure']
+            airline = session['airline']
+            query = 'SELECT * FROM flight WHERE flight.airline_name = %s  AND flight.departure_airport_code = %s'
+            cursor.execute(query, (airline,departure_airport))
+            data = cursor.fetchall()
+            if data:
+                return render_template("view_flight_departure.html", show = True, flights = data, error=None)
+            else:
+                return render_template("view_flight_departure.html", show = False, flights = None, error='Flight cannot be found')
+        else:
+            return render_template("view_flight_departure.html", show = False, flights = None,error=None)
+    else:
+        return render_template("error.html", error = "User not logged in")
+
+@app.route("/view_flight_arrival",methods=['GET', 'POST'])
+def view_flight_arrival():
+    if session['login'] and session['role'] == "staff" and "username" in session:
+        if request.method == 'POST':
+            cursor = conn.cursor()
+            arrival_airport = request.form['arrival']
+            airline = session['airline']
+            query = 'SELECT * FROM flight WHERE flight.airline_name = %s  AND flight.arrival_airport_code = %s'
+            cursor.execute(query, (airline,arrival_airport))
+            data = cursor.fetchall()
+            if data:
+                return render_template("view_flight_arrival.html", show = True, flights = data, error=None)
+            else:
+                return render_template("view_flight_arrival.html", show = False, flights = None, error='Flight cannot be found')
+        else:
+            return render_template("view_flight_arrival.html", show = False, flights = None,error=None)
+    else:
+        return render_template("error.html", error = "User not logged in")
+
 @app.route('/create_new_flights')
 def create_new_flights():
 	if session['login'] and session['role'] == "staff" and "username" in session:
@@ -324,7 +414,7 @@ def change_status():
         return render_template('change_status_of_flights.html', error = None)
 
 # Untested Code
-@app.route('/view_flight_ratings')
+@app.route('/view_flight_ratings', methods = ['GET', 'POST'])
 def view_flight_ratings():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
@@ -337,7 +427,7 @@ def view_flight_ratings():
     else:
         return render_template("error.html", error="Session fail")
 
-@app.route('/view_frequent_customers')
+@app.route('/view_frequent_customers', methods = ['GET', 'POST'])
 def view_frequent_customers():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
@@ -350,7 +440,7 @@ def view_frequent_customers():
     else:
         return render_template("error.html", error="Session fail")
 
-@app.route('/view_report')
+@app.route('/view_report', methods = ['GET', 'POST'])
 def view_report():
     if request.method == 'POST':
         if session['login'] and session['role'] == "staff" and "username" in session:
@@ -359,9 +449,10 @@ def view_report():
             start_date = request.form['start_date']
             end_date = request.form['end_date']
             
-            query = 'SELECT MONTHNAME(purchase_datetime) as month, COUNT(ticket_ID) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime between %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)'
+            query = "SELECT MONTHNAME(purchase_datetime) as month, COUNT(ID_num) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime between %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
             cursor.execute(query, (airline, start_date, end_date))
             data = cursor.fetchall()
+            print(data)
             #data = countTicket(airline, start_date, end_date)
             if data:
                 return render_template('view_report.html', error = None, data = data, months = len(data))
@@ -373,7 +464,7 @@ def view_report():
     elif request.method == 'GET':
         return render_template('view_report.html', error = None, data = None, months = 0)
 
-@app.route('/view_earned_revenue')
+@app.route('/view_earned_revenue', methods = ['GET', 'POST'])
 def view_earned_revenue():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
@@ -389,7 +480,7 @@ def view_earned_revenue():
     else:
         return render_template("error.html", error="Session fail")
 
-@app.route('/view_earned_revenue_by_class')
+@app.route('/view_earned_revenue_by_class', methods = ['GET', 'POST'])
 def view_earned_revenue_by_class():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
@@ -408,11 +499,12 @@ def view_earned_revenue_by_class():
     else:
         return render_template("error.html", error="Session fail")
 
-@app.route('/view_top_destinations')
+@app.route('/view_top_destinations', methods = ['GET', 'POST'])
 def view_top_destinations():
     if session['login'] and session['role'] == "staff" and "username" in session:
         cursor = conn.cursor()
         username = session['username']
+        #airline_name = session['airline']
         query_year = 'SELECT airport.city FROM airline_staff, ticket, flight, airport WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
         query_month = 'SELECT airport.city FROM airline_staff, ticket, flight, airport WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -3 month) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
         cursor.execute(query_year, (username))
@@ -420,6 +512,8 @@ def view_top_destinations():
         cursor.execute(query_month, (username))
         last3months = cursor.fetchone()
         cursor.close()
+        print(lastyear)
+        print(last3months)
         return render_template('view_top_destinations.html', lastyear = lastyear, last3months = last3months)
     else:
         return render_template("error.html", error="Session fail")
@@ -475,6 +569,7 @@ def searchFlights():
 
     return render_template('searchResults.html', flights = departure_flights, cities = [departure_city, arrival_city]) 
 
+# all flights
 def staff_view_flights(username):
     cursor = conn.cursor()
     query = 'SELECT flight.flight_num, flight.airplane_ID, flight.airline_name, flight.base_price, flight.status, flight.departure_datetime, flight.departure_airport_code, flight.arrival_datetime, flight.arrival_airport_code FROM flight, airline_staff WHERE flight.airline_name = airline_staff.airline_name AND airline_staff.username = %s'
@@ -483,6 +578,15 @@ def staff_view_flights(username):
     data = cursor.fetchall()
     print(data)
     return data
+
+def staff_view_flights_30_days(username):
+    cursor = conn.cursor()
+    query = 'SELECT flight.flight_num, flight.airplane_ID, flight.airline_name, flight.base_price, flight.status, flight.departure_datetime, flight.departure_airport_code, flight.arrival_datetime, flight.arrival_airport_code FROM flight, airline_staff WHERE flight.airline_name = airline_staff.airline_name AND airline_staff.username = %s AND (departure_datetime BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 30 DAY))'
+    cursor.execute(query, (username))
+    data = cursor.fetchall()
+    print(data)
+    return data
+
 '''
 def countTicket(airline, startMonth, endMonth):
     cursor = conn.cursor()

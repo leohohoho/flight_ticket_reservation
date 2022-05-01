@@ -4,6 +4,7 @@
 <h1>Ticket sold in last {{months}} month(s):</h1>
 
 {% if data %}
+
     <style type="text/css">
         table, th, td{
             border: 1px solid black;
@@ -29,6 +30,8 @@
 	Until <input type="date" name = "end_date" required/></br>
 	<input type="submit" value = Submit />
 </form>
+
+
 
 {% if error %}
     <p class="error"><strong>Error:</strong> {{error}}</p>
