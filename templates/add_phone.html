@@ -1,0 +1,35 @@
+<html>
+<body>
+<form action="/post_phone" method="POST">
+	Phone Number: <input type="number" name = "phone_number" placeholder="10 digit phone number" required/> </br>
+	<input type="submit" value = "Add" />
+</form>
+
+
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<table>
+    <th>Phone Number</th>
+	{% if number|length == 1 %}
+	<tr>
+		<td>{{number['phone_number']}}</td>
+	</tr>
+	{% else %}
+		{% for line in number %}
+		<tr>
+			<td>{{line['phone_number']}}</td>
+		</tr>
+		{% endfor %}
+	{% endif %}
+</table>
+
+<a href="/staffHomePage"><button> Back </button></a>
+<a href="/logout">Logout</a>
+
+</body>
+</html>

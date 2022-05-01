@@ -1,6 +1,4 @@
 <html>
-<head>
-</head>
 <body>
 <form action="/post_airport" method="POST">
 	Airport Code: <input type="text" name = "code" placeholder="code" required/> </br>
@@ -11,7 +9,6 @@
 	<input type="submit" value = Submit />
 
 </form>
-<a href="/staffHomePage"><button> Back </button></a>
 
 <style type="text/css">
 	table, th, td{
@@ -37,6 +34,7 @@
 {% endfor %}
 </table>
 
+<a href="/staffHomePage"><button> Back </button></a>
 <a href="/logout">Logout</a>
 
 </body>

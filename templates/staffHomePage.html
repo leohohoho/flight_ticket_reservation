@@ -1,10 +1,6 @@
 <html>
-
-<head>
-</head>
 <body>
 	<h1>Welcome  {{ username }}</h1>
-{% if show_button %}
 	<a href="/view_flight_staff"><button>View Flight</button></a>
 	<a href="/view_flight_ratings"><button>View Flight Ratings</button></a>
 	<a href="/view_report"><button>View Report</button></a>
@@ -13,38 +9,48 @@
 	<a href="/add_airport"><button>Add Airport</button></a>
 	<a href="/change_status"><button>Change Status</button></a>
 	<br> </br>
-	<!-- <a href="/staff_flights"><button>View My Flight</button></a> -->
-	<!-- <a href="/search_flight"><button> Find Flights</button></a> -->
-{% else %}
-<a href="/staffHomePage"><button> Home </button></a>
-{% endif %}
 
-<!--
+
+
 <style type="text/css">
 	table, th, td{
 		border: 1px solid black;
 	}
 </style>
--->
+
 
 {% include 'flight_info.html' %}
 
 
 <br> </br>
-{% if show_button %}
-	<a href="/view_frequent_customers"><button>View Frequent Customers</button></a>
-	
+	<a href="/view_frequent_customers"><button>View Frequent Customers</button></a>	
 	<a href="/view_earned_revenue"><button>View Total Earned Revenue</button></a>
     <a href="/view_earned_revenue_by_class"><button>View Earned Revenue By Class</button></a>
 	<a href="/view_top_destinations"><button>View Top Destinations</button></a>
-{% endif %}
 <br> </br>
 
-{% if show_button %}
-	<a href="/logout">Logout</a>
-{% endif %}
+<table>
+    <th>Phone Number</th>
+	{% if number|length == 1 %}
+	<tr>
+		<td>{{number['phone_number']}}</td>
+	</tr>
+	{% else %}
+		{% for line in number %}
+		<tr>
+			<td>{{line['phone_number']}}</td>
+		</tr>
+		{% endfor %}
+	{% endif %}
+</table>
+<a href="/add_phone"><button>Add Phone Number</button></a>
+
+<p></p>
+
+<a href="/staffHomePage"><button> Home </button></a>
+<a href="/logout">Logout</a>
+
+
 
 </body>
-
-
 </html>
