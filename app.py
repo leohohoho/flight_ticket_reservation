@@ -459,7 +459,7 @@ def view_frequent_customers_flight():
             cursor = conn.cursor()
             email = request.form['email']
             airline = session['airline']
-            query = 'SELECT flight.airplane_ID, flight.airline_name, flight.flight_num, flight.base_price, flight.status, flight.departure_datetime, flight.arrival_datetime, flight.departure_airport_code, flight.arrival_airport_code FROM flight, ticket WHERE flight.airline_name = %s  AND flight.flight_num = ticket.flight_num AND flight.departure_datetime = ticket.departure_datetime AND ticket.email = %s'
+            query = 'SELECT flight.airplane_ID, flight.airline_name, flight.flight_num, flight.base_price, flight.status, flight.departure_datetime, flight.arrival_datetime, flight.departure_airport_code, flight.arrival_airport_code FROM flight, ticket WHERE flight.airline_name = %s AND flight.airline_name = ticket.airline_name  AND flight.flight_num = ticket.flight_num AND flight.departure_datetime = ticket.departure_datetime AND ticket.email = %s'
             cursor.execute(query, (airline,email))
             data = cursor.fetchall()
             if data:

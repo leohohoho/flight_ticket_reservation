@@ -72,12 +72,17 @@ WHERE flight.airline_name = %  AND flight.flight_num = rate.flight_num
 ORDER BY rate.flight_num
 
 /* 7. View Frequent Customers */
+/* View Frequent Customers */
 SELECT customer.name, customer.email 
 FROM ticket, customer 
 WHERE ticket.airline_name = %s AND ticket.email = customer.email 
         AND ticket.departure_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() 
 GROUP BY customer.email 
 ORDER BY (count(customer.name)) DESC 
+/* View Customers' flights within the airline */
+SELECT flight.airplane_ID, flight.airline_name, flight.flight_num, flight.base_price, flight.status, flight.departure_datetime, flight.arrival_datetime, flight.departure_airport_code, flight.arrival_airport_code 
+FROM flight, ticket 
+WHERE flight.airline_name = %s  AND flight.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.departure_datetime = ticket.departure_datetime AND ticket.email = %s
 
 /* 8. View Reports */
 SELECT MONTHNAME(purchase_datetime) AS month, YEAR(purchase_datetime) AS year, COUNT(ticket_ID) AS ticket_number 
