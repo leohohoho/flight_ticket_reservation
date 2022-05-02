@@ -406,7 +406,7 @@ def change_status():
             departure_datetime = request.form['departure_datetime']
             status = request.form['status']
             datetime.strptime(departure_datetime, '%Y-%m-%dT%H:%M')
-            query = 'SELECT * FROM flight WHERE flight.flight_num = %s AND flight.departure_datetime = %s flight.airline_name = %s'
+            query = 'SELECT * FROM flight WHERE flight.flight_num = %s AND flight.departure_datetime = %s AND flight.airline_name = %s'
             cursor.execute(query,(flight_num, departure_datetime, airline))
             data = cursor.fetchone()
             if data:
