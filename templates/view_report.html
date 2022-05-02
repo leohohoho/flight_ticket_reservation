@@ -13,11 +13,13 @@
 
     <table>
         <th>Month</th>
+        <th>Year</th>
         <th>Tickets sold</th>
 
         {% for line in data %}
         <tr>
             <td>{{line['month']}}</td>
+            <td>{{line['year']}}</td>
             <td>{{line['ticket_number']}}</td>
         </tr>
         {% endfor %}

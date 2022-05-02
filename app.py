@@ -480,7 +480,7 @@ def view_report():
             start_date = request.form['start_date']
             end_date = request.form['end_date']
             
-            query = "SELECT MONTHNAME(purchase_datetime) as month, COUNT(ID_num) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime BETWEEN %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
+            query = "SELECT MONTHNAME(purchase_datetime) as month, YEAR(purchase_datetime) AS year, COUNT(ID_num) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime BETWEEN %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
             cursor.execute(query, (airline, start_date, end_date))
             data = cursor.fetchall()
             print(data)

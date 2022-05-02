@@ -80,7 +80,7 @@ GROUP BY customer.email
 ORDER BY (count(customer.name)) DESC 
 
 /* 8. View Reports */
-SELECT MONTHNAME(purchase_datetime) AS month, COUNT(ticket_ID) AS ticket_number 
+SELECT MONTHNAME(purchase_datetime) AS month, YEAR(purchase_datetime) AS year, COUNT(ticket_ID) AS ticket_number 
 FROM ticket 
 WHERE airline_name = %s AND purchase_datetime BETWEEN %s AND %s 
 GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)
