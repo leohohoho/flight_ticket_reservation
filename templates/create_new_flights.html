@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block body %}
+<div class = "container">
+	{% include "layouts/toolbar-staff.html" %}
+	<div class = "header">
+		<div class = "header-text">
+			<h1 class = "main-title">Create a New Flight</h1>
+		</div>
+	</div>
+<form action="/post_new_flights" method="POST">
+    Flight Num: <input type="text" name = "flight_num" placeholder="flight_num" required/></br>
+	Airplane ID: <input type="text" name = "airplane_ID" placeholder="airplane_ID" required/> </br>
+	Airline Name: <input type="text" name = "airline_name" placeholder="airline_name" required/></br>
+	Base Price: <input type="number" name = "base_price" placeholder="base_price" required/></br>
+	<label for="status">Status:</label>
+  <select name="status" id="status" required>
+    <option value="on time">On-Time</option>
+    <option value="delayed">Delayed</option>
+  </select>
+  <br>
+	Departure Date Time: <input type="datetime-local" name = "departure_datetime" placeholder="departure_datetime" required/></br>
+	Departure Airport Code: <input type="text" name = "departure_airport_code" placeholder="departure_airport_code" required/></br>
+    Arrival Date Time: <input type="datetime-local" name = "arrival_datetime" placeholder="arrival_datetime" required/></br>
+	Arrival Airport Code: <input type="text" name = "arrival_airport_code" placeholder="arrival_airport_code" required/></br>
+	<button class = "button-primary" style = "margin-top:2%;margin-bottom:3%;" type = "submit">Submit</button>
+
+</form>
+
+
+
+
+<style type="text/css">
+	input{
+		font-family: 'Doris-Medium';
+		padding:7px;
+	}
+</style>
+
+
+
+{% if show_button %}
+	<a href="/logout">Logout</a>
+{% endif %}
+</div>
+
+{% endblock %}

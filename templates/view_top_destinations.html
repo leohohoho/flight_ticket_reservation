@@ -1,0 +1,35 @@
+<html>
+<body>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+<table>
+	<th>Past Year Top Destination</th>
+
+    {% for line in lastyear %}
+	<tr>
+		<td>{{line['city']}}</td>
+	</tr>
+    {% endfor %}
+</table>
+
+<table>
+	<th>Past 3 Months Top Destination</th>
+
+	{% for line in last3months %}
+	<tr>
+		<td>{{line['city']}}</td>
+	</tr>
+    {% endfor %}
+</table>
+
+<a href="/staffHomePage"><button> Back </button></a>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>

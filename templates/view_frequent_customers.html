@@ -1,0 +1,53 @@
+{% extends "layouts/base.html" %}
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block body %}
+<div class = "container">
+	{% include "layouts/toolbar-staff.html" %}
+	<div class = "header">
+		<div class = "header-text">
+			<h1 class = "main-title">Your Most Frequent Customers</h1>
+		</div>
+	</div>
+	<style type="text/css">
+		table, th, td{
+			border: 0.5px solid rgb(189, 188, 188);
+			font-family: 'Doris-Medium';
+			padding:15px;
+			width:50%;
+			text-align: center;
+		}
+		input{
+			font-family: 'Doris-Medium';
+			padding:7px;
+			
+		}
+		.table{
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+	<div class = "table">
+		<table>
+			<th>Customer's Name</th>
+			<th>Customer's Email</th>
+		
+		{% for line in data %}
+			<tr>
+				<td>{{line['name']}}</td>
+				<td>{{line['email']}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		
+	</div>
+
+
+{%endblock%}

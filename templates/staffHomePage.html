@@ -1,0 +1,91 @@
+{% extends "layouts/base.html" %}
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block body %}
+	<div class = "container">
+		{% include "layouts/toolbar-staff.html" %}
+
+		{% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>
+                {{error}}
+            </strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+            {% endif %}
+
+            {% if message %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>
+                    {{message}}
+                </strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+                {% endif %}
+
+
+	<div class = "header">
+		<div class = "header-text">
+			<h1 class = "main-title">Welcome, {{ username }}!</h1>
+
+		</div>
+	</div>
+
+{% if show_button %}
+<div class = "row">
+	<div class = "col-2">
+		<h3 class = "airline_name" style = "margin-bottom:5%;text-align:center;">Choose an Action</h3>
+		<div class = "border" style = "margin-bottom:7%"></div>
+		<a href="/view_flight_staff"><button class = "button-primary" style = "margin-bottom:3%">View Flight</button></a>
+		<a href="/create_new_flights"><button class = "button-primary" style = "margin-bottom:3%">Create New Flights</button></a>
+		 <a href="/add_airplane"><button class = "button-primary" style = "margin-bottom:3%">View/Add Airplanes</button></a>
+		<a href="/add_airport"><button class = "button-primary" style = "margin-bottom:3%">View/Add Airports</button></a>
+		<a href="/view_report"><button class = "button-primary" style = "margin-bottom:3%">Ticket Report</button></a>
+		<a href="/change_status"><button class = "button-primary" style = "margin-bottom:3%">Change Status</button></a>
+	</div>
+	<br> </br>
+	<!-- <a href="/staff_flights"><button>View My Flight</button></a> -->
+	<!-- <a href="/search_flight"><button> Find Flights</button></a> -->
+{% else %}
+<a href="/staffHomePage"><button> Back </button></a>
+{% endif %}
+
+<!--
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+-->
+
+{% include 'flight_info.html' %}
+
+
+<br> </br>
+{% if show_button %}
+	<div class = "col-2" style = "margin-left:3%;">
+		<h3 class = "airline_name" style = "margin-bottom:7%;text-align:center;">Choose an Action</h3>
+		<div class = "border" style = "margin-bottom:7%"></div>
+		<a href="/view_frequent_customers"><button class = "button-primary" style = "margin-bottom:3%">View Frequent Customers</button></a>
+		<a href="/view_flight_ratings"><button class = "button-primary" style = "margin-bottom:3%">View Flight Ratings</button></a>
+		<a href="/view_earned_revenue"><button class = "button-primary" style = "margin-bottom:3%">View Total Earned Revenue</button></a>
+		<a href="/view_earned_revenue_by_class"><button class = "button-primary" style = "margin-bottom:3%">View Earned Revenue By Class</button></a>
+		<a href="/view_top_destinations"><button class = "button-primary" style = "margin-bottom:3%">View Top Destinations</button></a>
+
+	</div>
+	
+{% endif %}
+<br> </br>
+
+
+</div>
+
+</div>
+{% endblock %}

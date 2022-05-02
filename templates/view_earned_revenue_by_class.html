@@ -1,0 +1,56 @@
+<html>
+<body>
+
+<style type="text/css">
+	table, th, td{
+		border: 1px solid black;
+	}
+</style>
+
+
+{% if first %}
+	<table>
+		<th>First Class Revenue</th>
+
+	    {% for line in first %}
+		<tr>
+			<td>{{first['sum(ticket.sold_price)']}}</td>
+		</tr>
+	    {% endfor %}
+	</table>
+{% endif %}
+
+{% if business %}
+	<table>
+		<th>Business Class Revenue</th>
+
+		{% for line in business %}
+		<tr>
+			<td>{{business['sum(ticket.sold_price)']}}</td>
+		</tr>
+	    {% endfor %}
+	</table>
+{% endif %}
+
+{% if economy %}
+	<table>
+		<th>Economy Class Revenue</th>
+
+		{% for line in economy %}
+		<tr>
+			<td>{{economy['sum(ticket.sold_price)']}}</td>
+		</tr>
+	    {% endfor %}
+	</table>
+{% endif %}
+
+{% if not first and not business and not economy  %}
+	<h1>No Revenue!</h1>
+{% endif %}
+
+<a href="/staffHomePage"><button> Back </button></a>
+
+<a href="/logout">Logout</a>
+
+</body>
+</html>

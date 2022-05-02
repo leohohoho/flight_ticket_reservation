@@ -1,0 +1,42 @@
+
+	<style type="text/css">
+		table, th, td{
+			border: 0.5px solid rgb(189, 188, 188);
+			font-family: 'Doris-Medium';
+		}
+	</style>
+	<div class = "col-7">
+		<h3 class = "airline_name" style = "text-align: center;">All Scheduled Flights</h3>
+		<div class = "border"  style = "margin-bottom:3%;"></div>
+		<table class = "table">
+			<th>Flight Number</th>
+			<th>Plane ID</th>
+			<th>Airline</th>
+			<th>Price</th>
+			<th>Status</th>
+			<th>Depart</th>
+			<th>From</th>
+			<th>Arrive</th>
+			<th>To</th>
+	
+	
+	
+		{% for line in flights %}
+			<tr>
+				<td>{{line['flight_num']}}</td>
+				<td>{{line['airplane_ID']}}</td>
+				<td>{{line['airline_name']}}</td>
+				<td>{{line['base_price']}}</td>
+				<td>{{line['status']}}</td>
+				<td>{{line['departure_datetime']}}</td>
+				<td>{{line['departure_airport_code']}}</td>
+				<td>{{line['arrival_datetime']}}</td>
+				<td>{{line['arrival_airport_code']}}</td>
+				
+			</tr>
+		{% endfor %}
+		</table>
+	</div>
+	
+
+</html>
