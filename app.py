@@ -500,8 +500,8 @@ def view_earned_revenue():
         cursor = conn.cursor()
         #username = session['username']
         airline = session['airline']
-        query_year = 'SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() GROUP BY airline_staff.airline_name'
-        query_month = 'SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() GROUP BY airline_staff.airline_name'
+        query_year = 'SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() GROUP BY ticket.airline_name'
+        query_month = 'SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() GROUP BY ticket.airline_name'
         cursor.execute(query_year, (airline))
         lastyear = cursor.fetchone()
         cursor.execute(query_month, (airline))
