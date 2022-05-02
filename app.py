@@ -366,10 +366,11 @@ def post_airport():
 @app.route('/add_airplane')
 def add_airplane():
     if session['login'] and session['role'] == 'staff':
-        username = session['username']
+        #username = session['username']
+        airline = session['airline']
         cursor = conn.cursor()
-        query = 'SELECT airplane.ID, airplane.airline_name, airplane.num_seats, airplane.manufacturer, airplane.age FROM airline_staff, airplane WHERE airline_staff.username = %s AND airline_staff.airline_name = airplane.airline_name'
-        cursor.execute(query,(username))
+        query = 'SELECT airplane.ID, airplane.airline_name, airplane.num_seats, airplane.manufacturer, airplane.age FROM airplane WHERE airplane.airline_name = %s'
+        cursor.execute(query,(airline))
         data = cursor.fetchall()
         cursor.close()
         return render_template('add_airplane.html', data = data)
@@ -379,13 +380,9 @@ def add_airplane():
 @app.route('/post_airplane', methods=['GET', 'POST'])
 def post_airplane():
     if session['login'] and session['role'] == 'staff':
-        username = session['username']
+        #username = session['username']
+        airline_name = session['airline']
         cursor = conn.cursor()
-        # get airline name from the staff
-        query_temp = 'SELECT airline_name FROM airline_staff WHERE airline_staff.username = %s'
-        cursor.execute(query_temp, (username))
-        temp = cursor.fetchone()
-        airline_name = temp.get('airline_name')
         ID = request.form['ID']
         num_seats = request.form['num_seats']
         manufacturer = request.form['manufacturer']
@@ -403,13 +400,14 @@ def change_status():
     if request.method == 'POST':
         if session['login'] and session['role'] == 'staff':
             cursor = conn.cursor()
-            username = session['username']
+            #username = session['username']
+            airline = session['airline']
             flight_num = request.form['flight_num']
             departure_datetime = request.form['departure_datetime']
             status = request.form['status']
             datetime.strptime(departure_datetime, '%Y-%m-%dT%H:%M')
-            query = 'SELECT * FROM flight, airline_staff WHERE flight.flight_num = %s AND flight.departure_datetime = %s AND airline_staff.username = %s AND airline_staff.airline_name = flight.airline_name'
-            cursor.execute(query,(flight_num, departure_datetime, username))
+            query = 'SELECT * FROM flight WHERE flight.flight_num = %s AND flight.departure_datetime = %s flight.airline_name = %s'
+            cursor.execute(query,(flight_num, departure_datetime, airline))
             data = cursor.fetchone()
             if data:
                 update_query = 'UPDATE flight SET status = %s WHERE flight_num = %s AND departure_datetime = %s'
@@ -430,27 +428,29 @@ def change_status():
 def view_flight_ratings():
     if session['login'] and session['role'] == 'staff':
         cursor = conn.cursor()
-        username = session['username']
-        query = 'SELECT rate.flight_num, rate.email, rate.rating, rate.comment FROM airline_staff, flight, rate WHERE airline_staff.username = %s AND flight.airline_name = airline_staff.airline_name AND flight.flight_num = rate.flight_num order by rate.flight_num'
-        cursor.execute(query, (username))
+        #username = session['username']
+        airline = session['airline']
+        query = 'SELECT rate.flight_num, rate.email, rate.rating, rate.comment FROM flight, rate WHERE flight.airline_name = %s AND flight.flight_num = rate.flight_num ORDER BY rate.flight_num'
+        cursor.execute(query, (airline))
         data = cursor.fetchall()
         cursor.close()
-        return render_template('view_flight_ratings.html', data=data)
+        return render_template('view_flight_ratings.html', data = data)
     else:
-        return render_template("error.html", error="Session fail")
+        return render_template("error.html", error = "View flight rating fail")
 
 @app.route('/view_frequent_customers', methods = ['GET', 'POST'])
 def view_frequent_customers():
     if session['login'] and session['role'] == 'staff':
         cursor = conn.cursor()
-        username = session['username']
-        query = 'SELECT customer.name, customer.email FROM ticket, airline_staff, customer WHERE airline_staff.username = %s AND ticket.airline_name = airline_staff.airline_name AND ticket.email = customer.email AND ticket.departure_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() GROUP BY customer.email ORDER BY (count(customer.name)) DESC'
-        cursor.execute(query, (username))
+        #username = session['username']
+        airline = session['airline']
+        query = 'SELECT customer.name, customer.email FROM ticket, customer WHERE ticket.airline_name = %s AND ticket.email = customer.email AND ticket.departure_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -1 year) AND CURDATE() GROUP BY customer.email ORDER BY (count(customer.name)) DESC'
+        cursor.execute(query, (airline))
         data = cursor.fetchall()
         cursor.close()
         return render_template('view_frequent_customers.html', data=data)
     else:
-        return render_template("error.html", error="Session fail")
+        return render_template("error.html", error="View frequent customer fail")
 
 @app.route('/view_frequent_customers_flight', methods = ['GET', 'POST'])
 def view_frequent_customers_flight():
@@ -480,7 +480,7 @@ def view_report():
             start_date = request.form['start_date']
             end_date = request.form['end_date']
             
-            query = "SELECT MONTHNAME(purchase_datetime) as month, COUNT(ID_num) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime between %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
+            query = "SELECT MONTHNAME(purchase_datetime) as month, COUNT(ID_num) as ticket_number FROM ticket WHERE airline_name = %s AND purchase_datetime BETWEEN %s and %s GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)"
             cursor.execute(query, (airline, start_date, end_date))
             data = cursor.fetchall()
             print(data)
@@ -498,12 +498,13 @@ def view_report():
 def view_earned_revenue():
     if session['login'] and session['role'] == 'staff':
         cursor = conn.cursor()
-        username = session['username']
-        query_year = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() group by airline_staff.airline_name'
-        query_month = 'SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() group by airline_staff.airline_name'
-        cursor.execute(query_year, (username))
+        #username = session['username']
+        airline = session['airline']
+        query_year = 'SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() GROUP BY airline_staff.airline_name'
+        query_month = 'SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() GROUP BY airline_staff.airline_name'
+        cursor.execute(query_year, (airline))
         lastyear = cursor.fetchone()
-        cursor.execute(query_month, (username))
+        cursor.execute(query_month, (airline))
         lastmonth = cursor.fetchone()
         cursor.close()
         return render_template('view_earned_revenue.html', lastyear = lastyear, lastmonth = lastmonth)
@@ -514,15 +515,16 @@ def view_earned_revenue():
 def view_earned_revenue_by_class():
     if session['login'] and session['role'] == 'staff':
         cursor = conn.cursor()
-        username = session['username']
-        query_first = "SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.travel_class = 'first' group by airline_staff.airline_name"
-        query_business = "SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.travel_class = 'business' group by airline_staff.airline_name"
-        query_economy = "SELECT sum(ticket.sold_price) FROM ticket, airline_staff WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND ticket.travel_class = 'economy' group by airline_staff.airline_name"
-        cursor.execute(query_first, (username))
+        #username = session['username']
+        airline = session['airline']
+        query_first = "SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.travel_class = 'first' GROUP BY ticket.airline_name"
+        query_business = "SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.travel_class = 'business' GROUP BY ticket.airline_name"
+        query_economy = "SELECT sum(ticket.sold_price) FROM ticket WHERE ticket.airline_name = %s AND ticket.travel_class = 'economy' GROUP BY ticket.airline_name"
+        cursor.execute(query_first, (airline))
         first = cursor.fetchone()
-        cursor.execute(query_business, (username))
+        cursor.execute(query_business, (airline))
         business = cursor.fetchone()
-        cursor.execute(query_economy, (username))
+        cursor.execute(query_economy, (airline))
         economy = cursor.fetchone()
         cursor.close()
         return render_template('view_earned_revenue_by_class.html', first = first, business = business, economy = economy)
@@ -533,13 +535,13 @@ def view_earned_revenue_by_class():
 def view_top_destinations():
     if session['login'] and session['role'] == 'staff':
         cursor = conn.cursor()
-        username = session['username']
-        #airline_name = session['airline']
-        query_year = 'SELECT airport.city FROM airline_staff, ticket, flight, airport WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
-        query_month = 'SELECT airport.city FROM airline_staff, ticket, flight, airport WHERE airline_staff.username = %s AND airline_staff.airline_name = ticket.airline_name AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -3 month) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
-        cursor.execute(query_year, (username))
+        #username = session['username']
+        airline = session['airline']
+        query_year = 'SELECT airport.city FROM ticket, flight, airport WHERE ticket.airline_name = %s AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
+        query_month = 'SELECT airport.city FROM ticket, flight, airport WHERE ticket.airline_name = %s AND flight.flight_num = ticket.flight_num AND flight.arrival_airport_code = airport.code AND (flight.arrival_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -3 month) AND CURDATE()) GROUP BY airport.city ORDER BY (count(airport.city)) DESC LIMIT 3'
+        cursor.execute(query_year, (airline))
         lastyear = cursor.fetchone()
-        cursor.execute(query_month, (username))
+        cursor.execute(query_month, (airline))
         last3months = cursor.fetchone()
         cursor.close()
         print(lastyear)
