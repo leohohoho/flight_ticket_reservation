@@ -8,6 +8,12 @@
 {% endblock %}
 {% block title %}Flight Application {% endblock %}
 {% block body %}
+<style>
+    .carousel-control-next-icon{
+        background-color: black;
+    }
+</style>
+
     <div class = "container">
         {% if error %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -52,54 +58,172 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>
                   {% endif %}
-                {% for flight in flights %}
-                <div class = "flight">
-                    <div class = "airport-graphics">
-                        <div class = "row g-2">
-                            <div class = "col-3">
-                                <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
-                                <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
-                                <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+            </div>
+            {% for flight in flights %}
+                <div id="carouselExampleIndicators" class="carousel" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <div class = "flight" style = "width:90%;">
+                            <div class = "airport-graphics">
+                                <div class = "row g-2">
+                                    <div class = "col-3">
+                                        <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                        <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                        <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+                                    </div>
+                                    <div class = "col-6">
+                                        <div class = "horizontal-line"></div>
+                                    </div> 
+                                    <div class = "col-3">
+                                        <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                        <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                        <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+        
+                                    </div>
+                                </div>
                             </div>
-                            <div class = "col-6">
-                                <div class = "horizontal-line"></div>
-                            </div> 
-                            <div class = "col-3">
-                                <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
-                                <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
-                                <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
-
+                            <div class = "row g-2">
+                                <div class = "col-6">
+                                    <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                                    <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                                </div>
+                                <div class = "col-6">
+                                    <h2 class = "base_price">${{flight['base_price']}}</h2>
+                                    <p class = "base_price">Economy</p>
+                                    <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+        
+                                    {% if session['email'] %}
+                                    <form action = "{{ url_for('purchaseTickets', 
+                                                                flight1_price = flight1_price,
+                                                                flight2_price = flight['base_price'],
+                                                                departure_flight_id = selected_departure_flight_id, 
+                                                                class = ticketClass,
+                                                                class2 = 'economy',
+                                                                return_flight = flight['flight_num'])}}
+                                                                " 
+                                        method = "POST">
+                                        <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class = "row g-2">
-                        <div class = "col-6">
-                            <h2 class = "airline_name">{{flight['airline_name']}}</h2>
-                            <h3 class = "flight_num">{{flight['flight_num']}}</h3>
-                        </div>
-                        <div class = "col-6">
-                            <h2 class = "base_price">${{flight['base_price']}}</h2>
-                            <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+                      </div>
+                      <div class="carousel-item">
+                        <div class = "flight" style = "width:90%;">
+                            <div class = "airport-graphics">
+                                <div class = "row g-2">
+                                    <div class = "col-3">
+                                        <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                        <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                        <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+                                    </div>
+                                    <div class = "col-6">
+                                        <div class = "horizontal-line"></div>
+                                    </div> 
+                                    <div class = "col-3">
+                                        <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                        <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                        <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class = "row g-2">
+                                <div class = "col-6">
+                                    <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                                    <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                                </div>
+                                <div class = "col-6">
+                                    <h2 class = "base_price">${{flight['business_price']}}</h2>
+                                    <p class = "base_price">Business Class</p>
+                                    <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
 
-                            {% if session['email'] %}
-                            <form action = "{{ url_for('purchaseTickets', 
-                                                        flight1_price = flight1_price,
-                                                        flight2_price = flight['base_price'],
-                                                        departure_flight_id = selected_departure_flight_id, 
-                                                        return_flight = flight['flight_num'])}}" 
-                                method = "POST">
-                                <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
-                            </form>
-                            {% endif %}
+                                    {% if session['email'] %}
+                                    <form action = "{{ url_for('purchaseTickets', 
+                                                                flight1_price = flight1_price,
+                                                                flight2_price = flight['business_price'],
+                                                                departure_flight_id = selected_departure_flight_id, 
+                                                                class = ticketClass,
+                                                                class2 = 'business',
+                                                                return_flight = flight['flight_num'])}}
+                                                                " 
+                                        method = "POST">
+                                        <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
+                      </div>
+                      <div class="carousel-item">
+                        <div class = "flight" style = "width:90%;">
+                            <div class = "airport-graphics">
+                                <div class = "row g-2">
+                                    <div class = "col-3">
+                                        <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                        <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                        <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+                                    </div>
+                                    <div class = "col-6">
+                                        <div class = "horizontal-line"></div>
+                                    </div> 
+                                    <div class = "col-3">
+                                        <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                        <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                        <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class = "row g-2">
+                                <div class = "col-6">
+                                    <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                                    <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                                </div>
+                                <div class = "col-6">
+                                    <h2 class = "base_price">${{flight['firstclass_price']}}</h2>
+                                    <p class = "base_price">First Class</p>
+                                    <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+        
+                                    {% if session['email'] %}
+                                    <form action = "{{ url_for('purchaseTickets', 
+                                                                flight1_price = flight1_price,
+                                                                flight2_price = flight['firstclass_price'],
+                                                                departure_flight_id = selected_departure_flight_id, 
+                                                                class = ticketClass,
+                                                                class2 = 'first',
+                                                                return_flight = flight['flight_num'])}}
+                                                                " 
+                                        method = "POST">
+                                        <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                          
+                        </div>
+                      </div>
                     </div>
-                  
-                </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </div> 
+
+                
                 {% endfor %}
 
-            </div>
-
            
-       
+    </div>
     </div>
 {% endblock %}

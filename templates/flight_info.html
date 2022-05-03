@@ -18,9 +18,7 @@
 			<th>From</th>
 			<th>Arrive</th>
 			<th>To</th>
-	
-	
-	
+
 		{% for line in flights %}
 			<tr>
 				<td>{{line['flight_num']}}</td>
@@ -32,11 +30,7 @@
 				<td>{{line['departure_airport_code']}}</td>
 				<td>{{line['arrival_datetime']}}</td>
 				<td>{{line['arrival_airport_code']}}</td>
-				
 			</tr>
 		{% endfor %}
 		</table>
 	</div>
-	
-
-</html>

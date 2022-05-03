@@ -8,6 +8,13 @@
 {% endblock %}
 {% block title %}Flight Application {% endblock %}
 {% block body %}
+
+    <style>
+        .carousel-control-next-icon{
+            background-color: black;
+        }
+    </style>
+
     <div class = "container">
         {% if error %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -29,9 +36,6 @@
 
             {% include "layouts/toolbar.html" %}
 
-
-
-            
         <div class = "header header-search">
             <div class = "header-text">
                 <h1 class = "main-title">Your Search Results<h1>
@@ -55,80 +59,262 @@
                     {% endif %}
                 {% endif %}
             </div>
+
+
+
+
             {% for flight in flights['departure'] %}
-                <div class = "flight">
-                    <div class = "airport-graphics">
+            <div id="carouselExampleIndicators" class="carousel" data-ride="carousel">
+                <ol class="carousel-indicators">
+                  <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                  <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                  <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class = "flight" style = "width:90%">
+                        <div class = "airport-graphics">
+                            <div class = "row g-2">
+                                <div class = "col-3">
+                                    <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                    <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                    <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+    
+                                </div>
+                                <div class = "col-6">
+                                    <div class = "horizontal-line"></div>
+                                </div> 
+                                <div class = "col-3">
+                                    <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                    <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                    <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+    
+                                </div>
+                            </div>
+                        </div>
                         <div class = "row g-2">
-                            <div class = "col-3">
-                                <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
-                                <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
-                                <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+                            <div class = "col-6">
+                                <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                                <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                                <p>(Press on the arrow to see other ticket classes)</p>
 
                             </div>
                             <div class = "col-6">
-                                <div class = "horizontal-line"></div>
-                            </div> 
-                            <div class = "col-3">
-                                <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
-                                <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
-                                <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
-
+                                <h2 class = "base_price">${{flight['base_price']}}</h2>
+                                
+                                <h4 class = "base_price">Economy</h4>
+                                <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+                                <!-- If user is logged in and is looking for a round-trip -->
+                                {% if round_trip and session['email'] %}
+                                <form action = "{{ url_for('selectReturnFlight', 
+                                                            city1 = cities[0], 
+                                                            city2 = cities[1], 
+                                                            return_date = arrival_date, 
+                                                            selected_departure_flight_id = flight['flight_num'],
+                                                            flight1_price = flight['base_price'],
+                                                            class = 'economy'
+                                                            )}}
+                                                            " method = "POST">
+                                    <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                                </form>
+                                <!--If user is logged in and is not looking for a round trip -->
+                                {% elif not round_trip and session['email'] %}
+                                <form action = "{{ url_for('purchaseTickets', 
+                                                  departure_flight_id = flight['flight_num'],
+                                                  flight1_price=flight['base_price'],
+                                                  class = 'economy'
+                                                  )
+                                                }}" method = "POST">
+                                    <button class = "button-primary" style = "width:30%; float:right;" type = "submit">Purchase this flight</button>
+                                </form>
+                                <!--If user is looking for a round-trip but not logged in -->
+                                {% elif round_trip and not session['email'] %}
+                                <form action = "{{ url_for('selectReturnFlight', 
+                                city1 = cities[0], 
+                                city2 = cities[1], 
+                                return_date = arrival_date, 
+                                flight1_price = flight['base_price'],
+                                class = 'economy',
+                                selected_departure_flight_id = flight['flight_num'])}}" method = "POST">
+                                <button class = "button-primary" style = "width: 30%; float:right;" type = "submit">View Return Flights</button>
+                                </form>
+                                <!--If user is not logged in and is not looking for a round trip-->
+                                {%else%}
+                            
+                                {% endif %}
+    
                             </div>
                         </div>
                     </div>
-                    <div class = "row g-2">
-                        <div class = "col-6">
-                            <h2 class = "airline_name">{{flight['airline_name']}}</h2>
-                            <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                  </div>
+                  <div class="carousel-item">
+                    <div class = "flight" style = "width:90%">
+                        <div class = "airport-graphics">
+                            <div class = "row g-2">
+                                <div class = "col-3">
+                                    <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                    <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                    <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+    
+                                </div>
+                                <div class = "col-6">
+                                    <div class = "horizontal-line"></div>
+                                </div> 
+                                <div class = "col-3">
+                                    <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                    <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                    <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+    
+                                </div>
+                            </div>
                         </div>
-                        <div class = "col-6">
-                            <h2 class = "base_price">${{flight['base_price']}}</h2>
-                            <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
-                            <!-- If user is logged in and is looking for a round-trip -->
-                            {% if round_trip and session['email'] %}
-                            <form action = "{{ url_for('selectReturnFlight', 
-                                                        city1 = cities[0], 
-                                                        city2 = cities[1], 
-                                                        return_date = arrival_date, 
-                                                        selected_departure_flight_id = flight['flight_num'],
-                                                        flight1_price = flight['base_price']
-                                                        )}}
-                                                        " method = "POST">
-                                <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
-                            </form>
-                            <!--If user is logged in and is not looking for a round trip -->
-                            {% elif not round_trip and session['email'] %}
-                            <form action = "{{ url_for('purchaseTickets', 
-                                              departure_flight_id = flight['flight_num'],
-                                              flight1_price=flight['base_price']
-                                              )
-                                            }}" method = "POST">
-                                <button class = "button-primary" style = "width:30%; float:right;" type = "submit">Purchase this flight</button>
-                            </form>
-                            <!--If user is looking for a round-trip but not logged in -->
-                            {% elif round_trip and not session['email'] %}
-                            <form action = "{{ url_for('selectReturnFlight', 
-                            city1 = cities[0], 
-                            city2 = cities[1], 
-                            return_date = arrival_date, 
-                            flight1_price = flight['base_price'],
-                            selected_departure_flight_id = flight['flight_num'])}}" method = "POST">
-                            <button class = "button-primary" style = "width: 30%; float:right;" type = "submit">View Return Flights</button>
-                            </form>
-                            <!--If user is not logged in and is not looking for a round trip-->
-                            {%else%}
-                        
-                            {% endif %}
+                        <div class = "row g-2">
+                            <div class = "col-6">
+                                <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                                <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                                <p>(Press on the arrow to see other ticket classes)</p>
 
+                            </div>
+                            <div class = "col-6">
+                                <h2 class = "base_price">${{flight['business_price']}}</h2>
+                                
+                                <h4 class = "base_price">Business Class</h4>
+                                <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+                                <!-- If user is logged in and is looking for a round-trip -->
+                                {% if round_trip and session['email'] %}
+                                <form action = "{{ url_for('selectReturnFlight', 
+                                                            city1 = cities[0], 
+                                                            city2 = cities[1], 
+                                                            return_date = arrival_date, 
+                                                            selected_departure_flight_id = flight['flight_num'],
+                                                            flight1_price = flight['business_price'],
+                                                            class = 'business'
+                                                            )}}
+                                                            " method = "POST">
+                                    <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                                </form>
+                                <!--If user is logged in and is not looking for a round trip -->
+                                {% elif not round_trip and session['email'] %}
+                                <form action = "{{ url_for('purchaseTickets', 
+                                                  departure_flight_id = flight['flight_num'],
+                                                  flight1_price=flight['business_price'],
+                                                  class = 'business'
+                                                  )
+                                                }}" method = "POST">
+                                    <button class = "button-primary" style = "width:30%; float:right;" type = "submit">Purchase this flight</button>
+                                </form>
+                                <!--If user is looking for a round-trip but not logged in -->
+                                {% elif round_trip and not session['email'] %}
+                                <form action = "{{ url_for('selectReturnFlight', 
+                                city1 = cities[0], 
+                                city2 = cities[1], 
+                                return_date = arrival_date, 
+                                flight1_price = flight['business_price'],
+                                class = 'business',
+                                selected_departure_flight_id = flight['flight_num'])}}" method = "POST">
+                                <button class = "button-primary" style = "width: 30%; float:right;" type = "submit">View Return Flights</button>
+                                </form>
+                                <!--If user is not logged in and is not looking for a round trip-->
+                                {%else%}
+                            
+                                {% endif %}
+    
+                            </div>
                         </div>
                     </div>
-                  
+                  </div>
+                  <div class="carousel-item">
+                    <div class = "flight" style = "width:90%">
+                        <div class = "airport-graphics">
+                            <div class = "row g-2">
+                                <div class = "col-3">
+                                    <h2 class = "departure_time">{{(flight['departure_time'])}}</h2>
+                                    <h3 class = "arrival_airport_code">{{flight['departure_airport_code']}}</h3>
+                                    <p class = "departure_date">{{flight['departure_datetime'][:11]}}</p>
+    
+                                </div>
+                                <div class = "col-6">
+                                    <div class = "horizontal-line"></div>
+                                </div> 
+                                <div class = "col-3">
+                                    <h2 class = "arrival_time">{{flight['arrival_time']}}</h2>
+                                    <h3 class = "departure_airport_code">{{flight['arrival_airport_code']}}</h3>
+                                    <p class = "arrival_date">{{flight['arrival_datetime'][:11]}}</p>
+    
+                                </div>
+                            </div>
+                        </div>
+                        <div class = "row g-2">
+                            <div class = "col-6">
+                                <h2 class = "airline_name">{{flight['airline_name']}}</h2>
+                                <h3 class = "flight_num">{{flight['flight_num']}}</h3>
+                                <p>(Press on the arrow to see other ticket classes)</p>
+                            </div>
+                            <div class = "col-6">
+                                <h2 class = "base_price">${{flight['firstclass_price']}}</h2>
+                                
+                                <h4 class = "base_price">First Class</h4>
+                                <p class = "remaining_seats">{{flight['remaining_tickets']}} seats remaining!</p>
+                                <!-- If user is logged in and is looking for a round-trip -->
+                                {% if round_trip and session['email'] %}
+                                <form action = "{{ url_for('selectReturnFlight', 
+                                                            city1 = cities[0], 
+                                                            city2 = cities[1], 
+                                                            return_date = arrival_date, 
+                                                            selected_departure_flight_id = flight['flight_num'],
+                                                            flight1_price = flight['firstclass_price'],
+                                                            class = 'first'
+                                                            )}}
+                                                            " method = "POST">
+                                    <button class = "button-primary" style = "width:30%;float:right;" type = "submit">Select this flight</button>
+                                </form>
+                                <!--If user is logged in and is not looking for a round trip -->
+                                {% elif not round_trip and session['email'] %}
+                                <form action = "{{ url_for('purchaseTickets', 
+                                                  departure_flight_id = flight['flight_num'],
+                                                  flight1_price=flight['firstclass_price'],
+                                                  class = 'first'
+                                                  )
+                                                }}" method = "POST">
+                                    <button class = "button-primary" style = "width:30%; float:right;" type = "submit">Purchase this flight</button>
+                                </form>
+                                <!--If user is looking for a round-trip but not logged in -->
+                                {% elif round_trip and not session['email'] %}
+                                <form action = "{{ url_for('selectReturnFlight', 
+                                city1 = cities[0], 
+                                city2 = cities[1], 
+                                return_date = arrival_date, 
+                                flight1_price = flight['firstclass_price'],
+                                class = 'first',
+                                selected_departure_flight_id = flight['flight_num'])}}" method = "POST">
+                                <button class = "button-primary" style = "width: 30%; float:right;" type = "submit">View Return Flights</button>
+                                </form>
+                                <!--If user is not logged in and is not looking for a round trip-->
+                                {%else%}
+                            
+                                {% endif %}
+    
+                            </div>
+                        </div>
+                    </div>
+                  </div>
                 </div>
-            {% endfor %}
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
+                
 
+                
+            {% endfor %}
             </div>
 
-           
-       
+            
+
     </div>
 {% endblock %}

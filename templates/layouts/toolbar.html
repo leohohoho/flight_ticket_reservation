@@ -57,7 +57,6 @@
                                     <input class="form-control form-control-m" name = "password" type="password" placeholder="Password" aria-label=".form-control-lg example" required/>
                                     <button type="submit" class="button-primary">Register</button>
                                 </form>
-                              
                              </div>
                     </div>
                   </div>
@@ -77,8 +76,8 @@
                             <h3 class = "secondary-title">Log In</h3>
                             <form action = "/loginStaffAuth" method = "POST">
                                 <div class = "input-group">
-                                    <input class="form-control" name = "username" type="text" placeholder="Username">
-                                    <input class="form-control" name = "password" type="password" placeholder="Password" >
+                                    <input class="form-control" name = "username" type="text" placeholder="Username" required>
+                                    <input class="form-control" name = "password" type="password" placeholder="Password" required>
                                     <button type="submit" class="button-secondary">Login</button>
                                 </div>
                             </form>
@@ -86,13 +85,13 @@
                             <h3 class = "secondary-title">Register</h3>
                             <form action = "/registerStaffAuth" method = "POST">
                                 <div class = "input-group">
-                                    <input class="form-control form-control-m" name = "username" type="text" placeholder="Username">
-                                    <input class="form-control form-control-m" name = "firstname" type="text" placeholder="First Name">
-                                    <input class="form-control form-control-m" name = "lastname" type="text" placeholder="Last Name">
+                                    <input class="form-control form-control-m" name = "username" type="text" placeholder="Username" required>
+                                    <input class="form-control form-control-m" name = "firstname" type="text" placeholder="First Name" required>
+                                    <input class="form-control form-control-m" name = "lastname" type="text" placeholder="Last Name" required>
                                     <label for="exampleFormControlInput1" class="form-label">Date of Birth</label>
                                     <input class="form-control form-control-m" name = "dateofbirth" type="date">
-                                    <input class="form-control form-control-m" name = "airlinename" type="text" placeholder="Airline Name">
-                                    <input class="form-control form-control-m" name = "password" type="password" placeholder="Password" >
+                                    <input class="form-control form-control-m" name = "airlinename" type="text" placeholder="Airline Name" required>
+                                    <input class="form-control form-control-m" name = "password" type="password" placeholder="Password" required>
                                     <button type="submit" class="button-secondary">Register</button>
                                 </div>
                             </form>

@@ -1,35 +1,54 @@
-<html>
-<body>
+{% extends "layouts/base.html" %}
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
-<style type="text/css">
-	table, th, td{
-		border: 1px solid black;
-	}
-</style>
 
-<table>
-	<th>Past Year Top Destination</th>
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block body %}
+<div class = "container">
+	{% include "layouts/toolbar-staff.html" %}
+	<div class = "header">
+		<div class = "header-text">
+			<h1 class = "main-title">Top Destinations</h1>
+		</div>
+	</div>
+	<div class = "table">
+		<table>
+			<th>Past Year Top Destination</th>
+			{% if lastyear|length == 1 %}
+				<tr>
+					<td>{{lastyear['city']}}</td>
+				</tr>
+			{% else %}
+				{% for line in lastyear %}
+				<tr>
+					<td>{{line['city']}}</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
+		</table>
 
-    {% for line in lastyear %}
-	<tr>
-		<td>{{line['city']}}</td>
-	</tr>
-    {% endfor %}
-</table>
-
-<table>
-	<th>Past 3 Months Top Destination</th>
-
-	{% for line in last3months %}
-	<tr>
-		<td>{{line['city']}}</td>
-	</tr>
-    {% endfor %}
-</table>
-
-<a href="/staffHomePage"><button> Back </button></a>
-
-<a href="/logout">Logout</a>
-
-</body>
-</html>
+	</div>
+	
+	<div class = "table">
+		<table>
+			<th>Past 3 Months Top Destination</th>
+			{% if last3months|length == 1 %}
+				<tr>
+					<td>{{last3months['city']}}</td>
+				</tr>
+			{% else %}
+				{% for line in last3months %}
+				<tr>
+					<td>{{line['city']}}</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
+		</table>
+	</div>
+	
+{% endblock %}

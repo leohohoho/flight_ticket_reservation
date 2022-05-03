@@ -1,21 +1,45 @@
-<html>
-<head>
-</head>
-<body>
-<form action="/change_status" method="POST">
-	Fight Number: <input type="text" name = "flight_num" placeholder="flight_num" required/> </br>
-	Departure Date Time: <input type="datetime-local" name = "departure_datetime" placeholder="departure_datetime" required/></br>
-	<label for="status">Status:</label>
-        <select name="status" id="status" required>
-            <option value="on-time">On-Time</option>
-            <option value="delayed">Delayed</option>
-        </select>
+{% extends "layouts/base.html" %}
+{% block head %}
+<link rel = "stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
+<link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
+<link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
-	<input type="submit" value = Change Status />
-	{% if error %}
-		<p class="error"><strong>Error:</strong> {{error}}</p>
-	{% endif %}
-</form>
-<a href="/staffHomePage">Back</a>
-</body>
-</html>
+
+<script src = "js/main.js"></script>
+{% endblock %}
+{% block body %}
+<div class = "container">
+	{% include "layouts/toolbar-staff.html" %}
+	<div class = "header">
+		<div class = "header-text">
+			<h1 class = "main-title">Change Flight Status</h1>
+		</div>
+	</div>
+	<style type="text/css">
+
+		input{
+			font-family: 'Doris-Medium';
+			padding:7px;
+			
+		}
+		
+	</style>
+
+
+	<form action="/change_status" method="POST">
+		Fight Number: <input type="text" name = "flight_num" placeholder="flight_num" required/> </br>
+		Departure Date Time: <input type="datetime-local" name = "departure_datetime" placeholder="departure_datetime" required/></br>
+		<label for="status">Status:</label>
+			<select name="status" id="status" required>
+				<option value="On time">On Time</option>
+				<option value="Delayed">Delayed</option>
+			</select>
+
+		<button type="submit" class = "button-primary" style = "margin-top:2%">Change Status</button>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
+	</form>
+
+{% endblock %}

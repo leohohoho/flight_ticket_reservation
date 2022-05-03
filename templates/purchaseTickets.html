@@ -70,6 +70,7 @@
                         </div>
                         <div class = "col-6">
                             <h2 class = "base_price">${{flight['base_price']}}</h2>
+                            <h3 class = "flight_num" style = "float:right;">{{ticketClass}} class</h3>
                         </div>
                     </div>
                   
@@ -103,6 +104,8 @@
                         </div>
                         <div class = "col-6">
                             <h2 class = "base_price">${{flight2['base_price']}}</h2>
+                            <h2 class = "flight_num" style = "float:right;">{{ticketClass2}} class</h2>
+
                         </div>
                     </div>
                   
@@ -135,11 +138,13 @@
                         sold_price1 = flight['base_price'],
                         airline_name1 = flight['airline_name'],
                         airplane_ID1 = flight['airplane_ID'],
+                        ticketClass = ticketClass,
                         flight_num2 = flight2['flight_num'],
                         departure_datetime2 = flight2['departure_datetime'],
                         sold_price2 = flight2['base_price'],
                         airline_name2 = flight2['airline_name'],
                         airplane_ID2 = flight2['airplane_ID'],
+                        ticketClass2 = ticketClass2
                         )}}" method = "POST">
 
                     {% else %}
@@ -149,7 +154,8 @@
                         departure_datetime=flight['departure_datetime'], 
                         sold_price=flight['base_price'], 
                         airline_name = flight['airline_name'],
-                        airplane_ID = flight['airplane_ID']
+                        airplane_ID = flight['airplane_ID'],
+                        ticketClass = ticketClass
                         )}}" 
                         method = "POST">
 
@@ -158,12 +164,12 @@
                         <input class="form-control form-control-m" name = "name" type="text" placeholder="Name on Card" aria-label=".form-control-lg example" required/>
                         <input class="form-control form-control-m" name = "card_number" type="text" placeholder="Card Number" aria-label=".form-control-lg example" required/>
    
-                        <select class="form-select" aria-label="Default select example" name = "card_type">
+                        <select class="form-select" aria-label="Default select example" name = "card_type" required>
                                 <option value="Debit" name = "Debit" selected>Debit</option>
                                 <option value="Credit" name = "Credit">Credit</option>
                               </select> 
                         <label for="exampleFormControlInput1" class="form-label">Expiration Date</label>
-                        <input class="form-control" type="date" name = "expiration_date" placeholder="mm/dd/yy" aria-label=".form-control-lg example">
+                        <input class="form-control" type="date" name = "expiration_date" placeholder="mm/dd/yy" aria-label=".form-control-lg example" required>
                         <button type = "submit" class = "button-primary">Purchase</button>
 
                     </form>

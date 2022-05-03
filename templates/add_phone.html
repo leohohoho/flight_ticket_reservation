@@ -13,44 +13,38 @@
 	{% include "layouts/toolbar-staff.html" %}
 	<div class = "header">
 		<div class = "header-text">
-			<h1 class = "main-title">View Earned Revenue</h1>
+			<h1 class = "main-title">Add Phone Number</h1>
 		</div>
 	</div>
 
+	<form action="/post_phone" method="POST">
+		Phone Number: <input type="number" name = "phone_number" placeholder="10 digit phone number" required/> </br>
+		<button class = "button-primary" type = "submit">Add</button>
+	</form>
 
-{% if lastyear %}
+
+
+	<style type="text/css">
+		table, th, td{
+			border: 1px solid black;
+		}
+	</style>
 	<div class = "table">
 		<table>
-			<th>Last Year Revenue</th>
-	
-			{% for line in lastyear %}
+			<th>Phone Number</th>
+			{% if number|length == 1 %}
 			<tr>
-				<td>{{lastyear['sum(ticket.sold_price)']}}</td>
+				<td>{{number['phone_number']}}</td>
 			</tr>
-			{% endfor %}
+			{% else %}
+				{% for line in number %}
+				<tr>
+					<td>{{line['phone_number']}}</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
 		</table>
 	</div>
 	
-{% endif %}
 
-{% if lastmonth %}
-<div class = "table">
-	<table>
-		<th>Last Month Revenue</th>
-
-		{% for line in lastmonth %}
-		<tr>
-			<td>{{lastmonth['sum(ticket.sold_price)']}}</td>
-		</tr>
-	    {% endfor %}
-	</table>
-
-</div>
-
-{% endif %}
-
-{% if not lastyear and not lastmonth %}
-	<h1>No Revenue!</h1>
-{% endif %}
-
-{% endblock %}
+{%endblock%}

@@ -13,13 +13,20 @@
 	{% include "layouts/toolbar-staff.html" %}
 	<div class = "header">
 		<div class = "header-text">
-			<h1 class = "main-title">Flight Ratings</h1>
+			<h1 class = "main-title">View Flight Within Ranged Date</h1>
 		</div>
 	</div>
 
+	<form action="/view_flight_date" method="POST">
+		From: <input type="datetime-local" name = "start time" required/></br>
+		Until: <input type="datetime-local" name = "end time" required/></br>
+		<button class = "button-primary" type = "submit">Find</button>
+	</form>
 
+{% if show %}
 	<style type="text/css">
 		table, th, td{
+			margin-top: 3%;
 			border: 0.5px solid rgb(189, 188, 188);
 			font-family: 'Doris-Medium';
 			padding:15px;
@@ -35,26 +42,42 @@
 			justify-content: center;
 		}
 	</style>
-
+	
 	<div class = "table">
 		<table>
 			<th>Flight Number</th>
-			<th>Customer's Email</th>
-			<th>Rating</th>
-			<th>Comment</th>
-		
-		
-		
-		{% for line in data %}
+			<th>Airplane ID</th>
+			<th>Airline Name</th>
+			<th>Base Price</th>
+			<th>Status</th>
+			<th>Departure Date Time</th>
+			<th>Departure Airport</th>
+			<th>Arrival Date Time</th>
+			<th>Arrival Airport</th>
+	
+		{% for line in flights %}
 			<tr>
 				<td>{{line['flight_num']}}</td>
-				<td>{{line['email']}}</td>
-				<td>{{line['rating']}}</td>
-				<td>{{line['comment']}}</td>
+				<td>{{line['airplane_ID']}}</td>
+				<td>{{line['airline_name']}}</td>
+				<td>{{line['base_price']}}</td>
+				<td>{{line['status']}}</td>
+				<td>{{line['departure_datetime']}}</td>
+				<td>{{line['departure_airport_code']}}</td>
+				<td>{{line['arrival_datetime']}}</td>
+				<td>{{line['arrival_airport_code']}}</td>
 			</tr>
 		{% endfor %}
 		</table>
-
 	</div>
+	
+
+{% endif %}
+
+
+
+	{% if error %}
+		<p class="error"><strong>Error:</strong> {{error}}</p>
+	{% endif %}
 
 {% endblock %}

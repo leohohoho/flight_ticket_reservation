@@ -4,8 +4,6 @@
 <link rel = "stylesheet" href = "{{ url_for('static', filename = 'stylesheets/searchResults.css')}}" />
 <link rel = "stylesheet" href = " {{ url_for('static', filename = 'stylesheets/purchaseTickets.css') }}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-
-
 <script src = "js/main.js"></script>
 {% endblock %}
 {% block body %}
@@ -28,7 +26,7 @@
                 </strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
               </div>
-                {% endif %}
+            {% endif %}
 
 
 	<div class = "header">
@@ -51,19 +49,15 @@
 		<a href="/change_status"><button class = "button-primary" style = "margin-bottom:3%">Change Status</button></a>
 	</div>
 	<br> </br>
-	<!-- <a href="/staff_flights"><button>View My Flight</button></a> -->
-	<!-- <a href="/search_flight"><button> Find Flights</button></a> -->
-{% else %}
-<a href="/staffHomePage"><button> Back </button></a>
+
 {% endif %}
 
-<!--
 <style type="text/css">
 	table, th, td{
 		border: 1px solid black;
 	}
 </style>
--->
+
 
 {% include 'flight_info.html' %}
 
@@ -80,6 +74,26 @@
 		<a href="/view_top_destinations"><button class = "button-primary" style = "margin-bottom:3%">View Top Destinations</button></a>
 
 	</div>
+
+	<div class = "table">
+		<table>
+			<th>Phone Number</th>
+			{% if number|length == 1 %}
+			<tr>
+				<td>{{number['phone_number']}}</td>
+			</tr>
+			{% else %}
+				{% for line in number %}
+				<tr>
+					<td>{{line['phone_number']}}</td>
+				</tr>
+				{% endfor %}
+			{% endif %}
+		</table>
+	</div>
+	
+	<a href="/add_phone"><button class = "button-primary" style = "width:15%;margin-bottom:3%">Add Phone Number</button></a>
+
 	
 {% endif %}
 <br> </br>
