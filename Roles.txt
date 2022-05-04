@@ -1,0 +1,2 @@
+Leo Ho: Staff's Use Cases
+Sanidhya Sitaula: Customer's Use Cases and Login/Homepage
