@@ -32,6 +32,15 @@ SELECT * FROM ticket WHERE email = %s AND purchase_datetime > %s AND purchase_da
 
 /*=============== Staff's Use Cases ==================*/ 
 
+/* Staff's login search */
+SELECT * FROM airline_staff WHERE username = %s
+/* Staff's register search */
+SELECT * from airline WHERE name = %s
+SELECT * FROM airline_staff WHERE username = %s
+/* Staff's register insert */
+INSERT INTO airline_staff(username, airline_name, password, first_name, last_name, date_of_birth) 
+VALUES (%s, %s, %s, %s, %s, %s)
+
 /* Search phone number */
 SELECT phone_number FROM staff_phone WHERE username = %s
 /* Add phone number */
