@@ -141,16 +141,16 @@ GROUP BY YEAR(purchase_datetime), MONTH(purchase_datetime)
 /* 9. View Earned Revenue */
 /* by year */
 SELECT sum(ticket.sold_price) 
-FROM ticket, airline_staff 
+FROM ticket
 WHERE ticket.airline_name = %s
         AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 year) AND CURDATE() 
-GROUP BY airline_staff.airline_name
+GROUP BY ticket.airline_name
 /* by month */
 SELECT sum(ticket.sold_price) 
 FROM ticket
 WHERE ticket.airline_name = %s 
         AND ticket.purchase_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL -1 month) AND CURDATE() 
-GROUP BY airline_staff.airline_name
+GROUP BY ticket.airline_name
 
 /* 10. View Earned Revenue By Travel Class */
 /* first class */
