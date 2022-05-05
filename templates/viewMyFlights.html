@@ -91,9 +91,11 @@
 
                     </div>
                     <div class = "col-4">
+
+                        <h4 class = "flight_num" style = "float:right;">{{flight['status']}}</h4>
                         {% if flight['can_cancel'] %}
                             <!-- Button trigger modal -->
-                            <button type="button" class="button-primary button-danger" style = "float:right;width:70%;margin-top:14%;" data-toggle="modal" data-target="#exampleModalCenter">
+                            <button type="button" class="button-primary button-danger" style = "float:right;width:100%;margin-top:14%;" data-toggle="modal" data-target="#exampleModalCenter">
                                 Cancel This Flight
                             </button>
   

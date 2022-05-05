@@ -12,8 +12,8 @@ app.config['SECRET_KEY'] = "abcde"
 app.config['APP_HOST'] = "localhost"
 
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = ""
-app.config['APP_DB'] = "project"
+app.config['DB_PASSWORD'] = "Adayinthelife885?"
+app.config['APP_DB'] = "final_project"
 app.config['CHARSET'] = 'utf8mb4'
 
 # Configure MySQL
@@ -197,6 +197,30 @@ def viewTotalSpendings():
     spending_data, months, num_trips, total_money_spent= getDefaultCustomerSpendings(session['email'], datetime.today(), months, len(months))
 
     return render_template('viewTotalSpendings.html', spending_data = spending_data, months = months, num_trips = num_trips, total_money_spent = total_money_spent)
+
+
+@app.route('/checkFlightStatus', methods = ['GET', 'POST'])
+def checkFlightStatus():
+    
+    airline_name = request.form['airline_name']
+    flight_number = request.form['flight_number']
+    departure_time = request.form['departure_time']
+    datetime.strptime(departure_time, '%Y-%m-%dT%H:%M')
+    arrival_time = request.form['arrival_time']
+    datetime.strptime(arrival_time, '%Y-%m-%dT%H:%M')
+
+    query = 'SELECT * FROM flight WHERE airline_name = %s AND flight_num = %s AND (departure_datetime = %s OR arrival_datetime = %s)'
+
+    cursor = conn.cursor()
+
+    cursor.execute(query, (airline_name, flight_number, departure_time, arrival_time))
+    
+    flights = cursor.fetchall()
+
+    print(flights)
+    return render_template('flightStatus_searchResults.html', flights = flights)
+
+
 #### Customer Purchase Page ####
 @app.route('/purchaseTickets', methods = ['GET', 'POST'])
 def purchaseTickets():
@@ -586,7 +610,6 @@ def view_flight_date():
         if request.method == 'POST':
             cursor = conn.cursor()
             start = request.form['start time']
-            datetime.strptime(start, '%Y-%m-%dT%H:%M')
             end = request.form['end time']
             datetime.strptime(end, '%Y-%m-%dT%H:%M')
             airline = session['airline']

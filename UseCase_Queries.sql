@@ -1,3 +1,14 @@
+/*=============== General Use Cases ======================*/ 
+/* Search Flight */
+ SELECT flight.flight_num, flight.arrival_airport_code, flight.departure_airport_code, flight.airline_name, flight.departure_datetime, flight.arrival_datetime, flight.status, flight.base_price, airplane.num_seats, COUNT(Ticket.ID_num ) as Ticket_Count  
+        FROM flight  
+        inner join airplane on flight.airplane_ID = airplane.ID left outer join ticket on flight.flight_num = ticket.flight_num
+        WHERE flight.departure_airport_code in %s and flight.arrival_airport_code in %s and flight.departure_datetime between  %s and %s 
+        group by flight.flight_num, flight.airline_name, flight.departure_datetime, flight.arrival_datetime, flight.status, flight.base_price, airplane.num_seats
+
+/* Check Flight Status */
+SELECT * FROM flight WHERE airline_name = %s AND flight_num = %s AND (departure_datetime = %s OR arrival_datetime = %s)
+
 /*=============== Customer's Use Cases ==================*/ 
 
 /* 1. Customer Login/Registration  */
@@ -15,6 +26,9 @@ SELECT airport.code FROM airport WHERE airport.city = %s
         inner join airplane on flight.airplane_ID = airplane.ID left outer join ticket on flight.flight_num = ticket.flight_num
         WHERE flight.departure_airport_code in %s and flight.arrival_airport_code in %s and flight.departure_datetime between  %s and %s 
         group by flight.flight_num, flight.airline_name, flight.departure_datetime, flight.arrival_datetime, flight.status, flight.base_price, airplane.num_seats
+/* Check Flight Status */
+SELECT * FROM flight WHERE airline_name = %s AND flight_num = %s AND (departure_datetime = %s OR arrival_datetime = %s)
+
 /* 3. Purchase Flight */ 
 INSERT INTO ticket(email, airplane_ID, airline_name, flight_num, departure_datetime, sold_price, card_number, name_on_card, card_type, expiration_date, purchase_datetime, travel_class) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 

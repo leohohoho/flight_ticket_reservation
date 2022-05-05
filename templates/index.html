@@ -74,7 +74,35 @@
          
         </div>
 
-           
-       
+        <div class = "border" style = "margin-top: 3%"></div>
+        
+        <h2 class = "airline_name">Check Flight Status</h2>
+        <div class = "search-flights-container">
+        <form action = "/checkFlightStatus" method = "POST">
+            <div class = "row g-2">
+                <div class="col-sm-2">
+                    <label for="exampleFormControlInput1" class="form-label">Airline Name</label>
+                    <input class="form-control " type="text" name = "airline_name" placeholder="Airline Name" aria-label=".form-control-lg example" required>
+                </div>
+                <div class = "col-sm-2">
+                    <label for="exampleFormControlInput1" class="form-label">Flight Number</label>
+                    <input class="form-control " type="text" name = "flight_number" placeholder="Flight Number" aria-label=".form-control-lg example" required>
+                </div>
+                <div class = "col-sm-3">
+                    <label for="exampleFormControlInput1" class="form-label">Departure Time</label>
+                    <input class="form-control" type="datetime-local" name = "departure_time" placeholder="mm/dd/yy" aria-label=".form-control-lg example" required>
+                </div>
+                <div class = "col-sm-3">
+                    <label for="exampleFormControlInput1" class="form-label">Arrival Time</label>
+                    <input class="form-control" type="datetime-local" name = "arrival_time" placeholder="mm/dd/yy" aria-label=".form-control-lg example">
+                </div>
+                <div class="col-sm-2">
+                    <div class = "button-container">
+                        <button type="submit" class="button-primary">Search</button>
+                    </div>
+                </div>
+           </div>
+        </form>
+        
     </div>
 {% endblock %}
