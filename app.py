@@ -12,8 +12,8 @@ app.config['SECRET_KEY'] = "abcde"
 app.config['APP_HOST'] = "localhost"
 
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = "Adayinthelife885?"
-app.config['APP_DB'] = "final_project"
+app.config['DB_PASSWORD'] = "#Adayinthelife885?" ##Adayinthelife885?
+app.config['APP_DB'] = "final_project" #project
 app.config['CHARSET'] = 'utf8mb4'
 
 # Configure MySQL
