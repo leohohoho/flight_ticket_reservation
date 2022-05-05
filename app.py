@@ -138,6 +138,8 @@ def loginAuthCustomer():
             session['email'] = email
             session['name'] = data['name']
             session['role'] = 'customer'
+        else:
+            raise(Exception)
         return redirect(url_for('customerHomePage'))
     except:
         #returns an error message to the html page
@@ -294,14 +296,21 @@ def executePurchaseRoundTrip():
         query = 'INSERT INTO ticket(email, airplane_ID, airline_name, flight_num, departure_datetime, sold_price, card_number, name_on_card, card_type, expiration_date, purchase_datetime, travel_class) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(query, (email, airplane_id1, airline_name1, flight_num1, departure_datetime1, sold_price1, card_number, name_on_card, card_type, expiration_date, purchase_datetime, ticketClass))
         conn.commit()
+        ticketId1 = cursor.lastrowid
         cursor.execute(query, (email, airplane_id2, airline_name2, flight_num2, departure_datetime2, sold_price2, card_number, name_on_card, card_type, expiration_date, purchase_datetime, ticketClass2))
+        conn.commit()
+        ticketId2 = cursor.lastrowid
+        query2 = "INSERT INTO purchase(ticket_ID, email) VALUES (%s, %s)"
+        cursor.execute(query2, (ticketId1, email))
+        conn.commit()
+        cursor.execute(query2, (ticketId2, email))
         conn.commit()
         cursor.close()
     except:
         cursor.close()
         return render_template('customerHomePage.html', error = "There was an error processing your request. Please try again.")
     
-    return render_template('customerHomePage.html', message = "Congratulations! Your flight has been booked.")
+    return redirect(url_for('customerHomePage.html', message = "Congratulations! Your flight has been booked."))
 
 
 #### Customer Execute One-Way Purchase ####
@@ -326,6 +335,11 @@ def executePurchaseOneWay():
         query = 'INSERT INTO ticket(email, airplane_ID, airline_name, flight_num, departure_datetime, sold_price, card_number, name_on_card, card_type, expiration_date, purchase_datetime, travel_class) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(query, (email, airplane_id, airline_name, flight_num, departure_datetime, sold_price, card_number, name_on_card, card_type, expiration_date, purchase_datetime, ticketClass))
         conn.commit()
+        ticketId = cursor.lastrowid
+        print(ticketId)
+        query3 = "INSERT INTO purchase(ticket_ID, email) VALUES (%s, %s)"
+        cursor.execute(query3, (ticketId, email))
+        conn.commit()
         cursor.close()    
     except:
         return redirect('customerHomePage.html', error = "There was an error processing your request. Please try again.")
@@ -338,8 +352,11 @@ def cancelFlight():
     email = session['email']
     cursor = conn.cursor() 
     query = 'DELETE from ticket WHERE email = %s AND flight_num = %s'
-    cursor.execute(query, (email, flight_num))
-    conn.commit() 
+    try:
+        cursor.execute(query, (email, flight_num))
+        conn.commit() 
+    except:
+        return redirect(url_for('viewMyFlights', error = "There was an error while canceling. Please try again."))
     return redirect(url_for('viewMyFlights', message = "Flight cancelled successfully."))  
 
 
@@ -559,7 +576,10 @@ def selectReturnFlight():
         flight['departure_time'] = flight['departure_datetime'][11:16]
         flight['arrival_time'] = flight['arrival_datetime'][11:16]
         flight['remaining_tickets'] = flight['num_seats'] - flight['Ticket_Count']
-        if (float(flight['remaining_tickets']) <= 0.25 * float(flight['num_seats'])):
+        if (flight['remaining_tickets'] == 0):
+            arrival_flights.pop(arrival_flights.index(flight))
+            continue
+        if (float(flight['remaining_tickets']) <= 0.75 * float(flight['num_seats'])):
             flight['base_price'] = flight['base_price'] + 0.25 * flight['base_price']
         flight['business_price'] = flight['base_price'] + 500
         flight['firstclass_price'] = flight['base_price'] + 1000
@@ -926,12 +946,16 @@ def searchFlights():
     departure_city = request.form['departure_city']
     arrival_city = request.form['arrival_city']
     departure_date = request.form['departure_date']
+    if (datetime.strptime(departure_date, '%Y-%m-%d') < datetime.today()):
+        return redirect(url_for('index', error = 'Please choose a date in the future to search for flights.'))
     type_of_trip = request.form['type_of_trip']
     arrival_date = ''
     departure_midnight = datetime.strptime(departure_date, '%Y-%m-%d') + timedelta(days = 1)
     
     if (type_of_trip == 'round_trip'):
         arrival_date = request.form['return_date']
+        if (datetime.strptime(arrival_date, '%Y-%m-%d') < datetime.today()):
+            return redirect(url_for('index', error = 'Please choose a date in the future to search for flights.'))
         arrival_midnight = datetime.strptime(arrival_date, '%Y-%m-%d') + timedelta(days = 1)
 
     query = 'SELECT airport.code FROM airport WHERE airport.city = %s'
@@ -966,9 +990,11 @@ def searchFlights():
         flight['departure_time'] = flight['departure_datetime'][11:16]
         flight['arrival_time'] = flight['arrival_datetime'][11:16]
         flight['remaining_tickets'] = flight['num_seats'] - flight['Ticket_Count']
-
-        if (float(flight['remaining_tickets']) <= 0.25 * float(flight['num_seats'])):
-            flight['base_price'] = flight['base_price'] + 0.25 * flight['base_price']
+        if (flight['remaining_tickets'] == 0):
+            departure_flights.pop(departure_flights.index(flight))
+            continue
+        if (float(flight['remaining_tickets']) <= 0.75 * float(flight['num_seats'])):
+            flight['base_price'] = float(flight['base_price']) + 0.25 * float(flight['base_price'])
             
         flight['business_price'] = flight['base_price'] + 500 
         flight['firstclass_price'] = flight['base_price'] + 1000 
